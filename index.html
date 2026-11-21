@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GiwaLaunch — Token Launchpad on GIWA Sepolia</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#0b0e14; color:#e6edf3; }
+  header { padding:48px 20px 24px; text-align:center; }
+  h1 { margin:0 0 8px; font-size:40px; letter-spacing:-.5px; }
+  h1 span { background:linear-gradient(90deg,#7c5cff,#00d4a6); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { color:#9fb0c3; max-width:640px; margin:0 auto; line-height:1.5; }
+  main { max-width:860px; margin:0 auto; padding:16px 20px 56px; }
+  .card { background:#121826; border:1px solid #22304a; border-radius:14px; padding:20px; margin:16px 0; }
+  .card h2 { margin:0 0 12px; font-size:18px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px solid #1b2740; font-size:14px; }
+  .row:last-child { border-bottom:none; }
+  .k { color:#9fb0c3; } .v { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; word-break:break-all; text-align:right; }
+  a { color:#6cb6ff; text-decoration:none; } a:hover { text-decoration:underline; }
+  .badge { display:inline-block; padding:2px 10px; border-radius:999px; background:#0d2b23; color:#00d4a6; border:1px solid #14532d; font-size:12px; }
+  .live { color:#00d4a6; font-weight:600; }
+  ul { margin:8px 0 0; padding-left:18px; color:#c9d6e8; line-height:1.6; font-size:14px; }
+  footer { text-align:center; color:#63738c; font-size:12px; padding:24px; }
+  button { background:#1c2b47; color:#e6edf3; border:1px solid #2c4470; border-radius:8px; padding:8px 14px; cursor:pointer; }
+  button:hover { background:#24365c; }
+</style>
+</head>
+<body>
+<header>
+  <h1><span>GiwaLaunch</span></h1>
+  <p class="sub">A token launchpad built with the Ammora SDK 0.3.9 on GIWA Sepolia testnet.
+  Create a Config, issue a token on a bonding curve, trade pre-graduation, then migrate to a concentrated pool.</p>
+  <p><span class="badge">GIWA Sepolia · Chain 91342 · Testnet</span></p>
+</header>
+<main>
+  <div class="card">
+    <h2>Live on-chain data <span class="live" id="liveStatus">loading…</span></h2>
+    <div class="row"><span class="k">Latest block</span><span class="v" id="blockNumber">—</span></div>
+    <div class="row"><span class="k">GLT total supply</span><span class="v" id="totalSupply">—</span></div>
+    <div class="row"><span class="k">GLT in graduated pool</span><span class="v" id="poolGlt">—</span></div>
+    <div class="row"><span class="k">WETH in graduated pool</span><span class="v" id="poolWeth">—</span></div>
+    <div class="row"><span class="k">Pool reserve ratio (WETH per GLT)</span><span class="v" id="ratio">—</span></div>
+    <p style="margin-top:12px"><button onclick="refresh()">Refresh</button></p>
+  </div>
+
+  <div class="card">
+    <h2>Launchpad contracts</h2>
+    <div class="row"><span class="k">Config ID</span><span class="v">76</span></div>
+    <div class="row"><span class="k">Config hash</span><span class="v">0x3a91c9e8a4a52fd644e6ac4b5e366633d8787dada53b7b540772ed46ae393fc7</span></div>
+    <div class="row"><span class="k">Token (GiwaLaunch Token · GLT)</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x3e6959a94f9459af88646577d986588dc7a38c01" target="_blank" rel="noopener">0x3e6959a94f9459af88646577d986588dc7a38c01</a></span></div>
+    <div class="row"><span class="k">Bonding curve (ALC)</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x4f7dea26e055b9138dfd599dde9fdc0cdc293993" target="_blank" rel="noopener">0x4f7dea26e055b9138dfd599dde9fdc0cdc293993</a></span></div>
+    <div class="row"><span class="k">Graduated pool</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x8627e8088c26302c261886AD15AE979204c04CBD" target="_blank" rel="noopener">0x8627e8088c26302c261886AD15AE979204c04CBD</a></span></div>
+    <div class="row"><span class="k">Creator / Config owner</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x2223C33409A353c5FD304629476fde06945C15A5" target="_blank" rel="noopener">0x2223C33409A353c5FD304629476fde06945C15A5</a></span></div>
+  </div>
+
+  <div class="card">
+    <h2>Proof of lifecycle (all on GIWA Sepolia)</h2>
+    <div class="row"><span class="k">Create Config #76</span><span class="v"><a href="https://sepolia-explorer.giwa.io/tx/0xcace7484ce924cbc6ae92954ce018698a4049a1478c614660c40e14b72c043fe" target="_blank" rel="noopener">tx</a></span></div>
+    <div class="row"><span class="k">Launch GLT token + curve</span><span class="v"><a href="https://sepolia-explorer.giwa.io/tx/0xa8aa240478456e9a49086f54aeb87599602b9774d73c013cf94d031bda53bfea" target="_blank" rel="noopener">tx</a></span></div>
+    <div class="row"><span class="k">First buy: 0.001 WETH → 496,855.345911949 GLT</span><span class="v"><a href="https://sepolia-explorer.giwa.io/tx/0x9754930b9a5f10b9db79da58779b7e94c27a133238786c99abcda47846272aae" target="_blank" rel="noopener">tx</a></span></div>
+    <div class="row"><span class="k">Graduation migration</span><span class="v"><a href="https://sepolia-explorer.giwa.io/tx/0x79205b65c22f5608604a57050618e40988979a7e931ae6b8c307d13cf70fea94" target="_blank" rel="noopener">tx</a></span></div>
+    <div class="row"><span class="k">Post-graduation sell: 100,000 GLT → 0.000198796780684104 WETH</span><span class="v"><a href="https://sepolia-explorer.giwa.io/tx/0xdbd70907e65e8d96990c6d78acc3cbeba34716f2e623e3595be9e1133cbbbc2c" target="_blank" rel="noopener">tx</a></span></div>
+  </div>
+
+  <div class="card">
+    <h2>How GiwaLaunch works</h2>
+    <ul>
+      <li><b>Config first:</b> the launchpad registers an immutable Config (fees, recipients, graduation policy) in the Ammora Config Registry. GiwaLaunch Config #76 uses concentrated graduation with a 0.0005 WETH quote threshold and zero base threshold.</li>
+      <li><b>Issue:</b> a creator launches a token + pre-graduation bonding curve (ALC) in one transaction through the Launch Factory.</li>
+      <li><b>Trade:</b> buys and sells run on the curve against WETH with a 125 bps cliff fee; every quote is simulated before signing.</li>
+      <li><b>Graduate:</b> once the quote threshold is crossed, migration moves liquidity into a concentrated ARL pool and trading continues there.</li>
+      <li><b>Fees:</b> Creator and Partner claim their shares separately from the FeeVault; LP fees accrue to position owners.</li>
+    </ul>
+  </div>
+</main>
+<footer>GiwaLaunch · Built with Ammora SDK 0.3.9 · Testnet only — no real funds</footer>
+<script>
+const RPC = 'https://sepolia-rpc-flashblocks.giwa.io';
+const GLT = '0x3e6959a94f9459af88646577d986588dc7a38c01';
+const WETH = '0x4200000000000000000000000000000000000006';
+const POOL = '0x8627e8088c26302c261886AD15AE979204c04CBD';
+async function rpc(method, params) {
+  const r = await fetch(RPC, { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ jsonrpc:'2.0', id:1, method, params }) });
+  const j = await r.json();
+  if (j.error) throw new Error(j.error.message);
+  return j.result;
+}
+const balData = addr => '0x70a08231' + '000000000000000000000000' + addr.slice(2).toLowerCase();
+const fmt = (raw, dec) => {
+  const v = BigInt(raw);
+  const d = 10n ** BigInt(dec);
+  const whole = v / d, frac = (v % d).toString().padStart(dec, '0').replace(/0+$/, '');
+  return whole.toLocaleString('en-US') + (frac ? '.' + frac : '');
+};
+async function refresh() {
+  const st = document.getElementById('liveStatus');
+  try {
+    st.textContent = 'loading…';
+    const [block, supply, poolGlt, poolWeth] = await Promise.all([
+      rpc('eth_blockNumber', []),
+      rpc('eth_call', [{ to: GLT, data: '0x18160ddd' }, 'latest']),
+      rpc('eth_call', [{ to: GLT, data: balData(POOL) }, 'latest']),
+      rpc('eth_call', [{ to: WETH, data: balData(POOL) }, 'latest']),
+    ]);
+    document.getElementById('blockNumber').textContent = parseInt(block, 16).toLocaleString('en-US');
+    document.getElementById('totalSupply').textContent = fmt(supply, 9) + ' GLT';
+    document.getElementById('poolGlt').textContent = fmt(poolGlt, 9) + ' GLT';
+    document.getElementById('poolWeth').textContent = fmt(poolWeth, 18) + ' WETH';
+    const g = Number(BigInt(poolGlt)) / 1e9, w = Number(BigInt(poolWeth)) / 1e18;
+    document.getElementById('ratio').textContent = g > 0 ? (w / g).toFixed(12) + ' WETH' : '—';
+    st.textContent = 'live';
+  } catch (e) {
+    st.textContent = 'RPC error: ' + e.message;
+  }
+}
+refresh();
+</script>
+</body>
+</html>
