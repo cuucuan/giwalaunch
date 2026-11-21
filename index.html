@@ -4,68 +4,219 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GiwaLaunch — Token Launchpad on GIWA Sepolia</title>
+<meta name="description" content="GiwaLaunch — create, launch and trade tokens on GIWA Sepolia with the Ammora SDK. Bonding curve launches, graduated pools, live swaps for GLT and tAMM.">
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root { color-scheme: dark; }
-  * { box-sizing: border-box; }
-  body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#0b0e14; color:#e6edf3; }
-  header { padding:48px 20px 24px; text-align:center; }
-  h1 { margin:0 0 8px; font-size:40px; letter-spacing:-.5px; }
-  h1 span { background:linear-gradient(90deg,#7c5cff,#00d4a6); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .sub { color:#9fb0c3; max-width:640px; margin:0 auto; line-height:1.5; }
-  main { max-width:860px; margin:0 auto; padding:16px 20px 56px; }
-  .card { background:#121826; border:1px solid #22304a; border-radius:14px; padding:20px; margin:16px 0; }
-  .card h2 { margin:0 0 12px; font-size:18px; }
-  .row { display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px solid #1b2740; font-size:14px; }
-  .row:last-child { border-bottom:none; }
-  .k { color:#9fb0c3; } .v { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; word-break:break-all; text-align:right; }
-  a { color:#6cb6ff; text-decoration:none; } a:hover { text-decoration:underline; }
-  .badge { display:inline-block; padding:2px 10px; border-radius:999px; background:#0d2b23; color:#00d4a6; border:1px solid #14532d; font-size:12px; }
-  .live { color:#00d4a6; font-weight:600; }
-  ul { margin:8px 0 0; padding-left:18px; color:#c9d6e8; line-height:1.6; font-size:14px; }
-  footer { text-align:center; color:#63738c; font-size:12px; padding:24px; }
-  button { background:#1c2b47; color:#e6edf3; border:1px solid #2c4470; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:14px; }
-  button:hover { background:#24365c; }
-  button:disabled { opacity:.45; cursor:not-allowed; }
-  button.primary { background:linear-gradient(90deg,#7c5cff,#00d4a6); color:#081018; font-weight:700; border:none; width:100%; padding:13px; font-size:16px; border-radius:10px; }
-  button.primary:hover { filter:brightness(1.12); }
-  .tabs { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
-  .tabs button { flex:1; min-width:130px; }
-  .tabs button.active { background:#2c4470; border-color:#7c5cff; color:#fff; font-weight:600; }
-  .swapbox { background:#0d1320; border:1px solid #22304a; border-radius:12px; padding:14px; margin:10px 0; }
-  .swapbox label { display:block; font-size:12px; color:#9fb0c3; margin-bottom:6px; }
-  .amtrow { display:flex; gap:8px; align-items:center; }
-  .amtrow input { flex:1; background:#121826; border:1px solid #2c4470; color:#e6edf3; border-radius:8px; padding:11px; font-size:18px; font-family:ui-monospace, Menlo, monospace; min-width:0; }
-  .amtrow .sym { font-weight:700; font-size:16px; min-width:52px; text-align:right; }
-  .bal { font-size:12px; color:#9fb0c3; margin-top:6px; }
-  .bal button { padding:2px 8px; font-size:11px; margin-left:6px; }
-  .arrow { text-align:center; color:#7c5cff; font-size:20px; margin:2px 0; }
-  .meta { font-size:13px; color:#c9d6e8; line-height:1.7; margin:10px 0; }
-  .meta .k { color:#9fb0c3; }
-  .status { font-size:13px; margin-top:12px; line-height:1.6; word-break:break-word; }
-  .status.ok { color:#00d4a6; } .status.err { color:#ff7b72; } .status.warn { color:#e3b341; }
-  .slip { display:flex; gap:8px; align-items:center; font-size:13px; color:#9fb0c3; margin:10px 0; }
-  .slip input { width:70px; background:#121826; border:1px solid #2c4470; color:#e6edf3; border-radius:8px; padding:6px 8px; font-family:ui-monospace, Menlo, monospace; }
-  #connectBtn { margin-top:14px; }
-  .addr { font-family:ui-monospace, Menlo, monospace; font-size:12px; color:#9fb0c3; margin-top:8px; word-break:break-all; }
+  :root{
+    color-scheme:dark;
+    --bg:#070510; --panel:rgba(20,16,44,.72); --panel2:rgba(28,22,60,.55);
+    --line:rgba(140,120,255,.22); --line2:rgba(140,120,255,.4);
+    --txt:#eef0ff; --mut:#9aa3c7; --dim:#6b7396;
+    --vio:#7c5cff; --vio2:#a78bfa; --teal:#00d4a6; --cyan:#38bdf8; --pink:#f472b6;
+    --grad:linear-gradient(92deg,#7c5cff 0%,#b04dff 45%,#00d4a6 110%);
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Space Grotesk',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden}
+  /* aurora background */
+  .aurora{position:fixed;inset:0;z-index:-2;background:
+    radial-gradient(900px 500px at 15% -10%,rgba(124,92,255,.35),transparent 60%),
+    radial-gradient(800px 460px at 85% 0%,rgba(0,212,166,.22),transparent 60%),
+    radial-gradient(700px 600px at 50% 110%,rgba(176,77,255,.18),transparent 60%),
+    linear-gradient(180deg,#0a0720,#070510 55%,#05040d)}
+  .aurora::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.14) 1px,transparent 1px);background-size:26px 26px;opacity:.25;mask-image:linear-gradient(180deg,#000,transparent 70%)}
+  .glow{position:fixed;width:520px;height:520px;border-radius:50%;filter:blur(120px);z-index:-1;opacity:.5;pointer-events:none}
+  .glow.a{background:#5b3df0;top:-160px;left:-120px;animation:drift 16s ease-in-out infinite alternate}
+  .glow.b{background:#008f74;top:20%;right:-200px;animation:drift 20s ease-in-out infinite alternate-reverse}
+  @keyframes drift{from{transform:translate(0,0)}to{transform:translate(60px,40px)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .fade{animation:fadeUp .7s ease both}
+  /* ticker */
+  .tickerwrap{position:sticky;top:0;z-index:50;background:rgba(8,6,22,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);overflow:hidden;height:38px;display:flex;align-items:center}
+  .ticker{display:flex;gap:38px;white-space:nowrap;animation:tick 46s linear infinite;padding-left:100%}
+  .tickerwrap:hover .ticker{animation-play-state:paused}
+  @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+  .tickitem{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--mut)}
+  .tickitem b{color:var(--txt)} .tickitem .up{color:var(--teal)} .tickitem .dn{color:var(--pink)} .tickitem .new{color:var(--cyan)}
+  /* header */
+  header{max-width:1120px;margin:0 auto;padding:18px 20px 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--txt)}
+  .logo svg{width:44px;height:44px;filter:drop-shadow(0 0 14px rgba(124,92,255,.65))}
+  .logo .name{font-size:24px;font-weight:700;letter-spacing:-.5px}
+  .logo .name span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .headright{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .badge{display:inline-block;padding:5px 12px;border-radius:999px;background:rgba(0,212,166,.1);color:var(--teal);border:1px solid rgba(0,212,166,.35);font-size:12px;font-weight:600}
+  .badge.vio{background:rgba(124,92,255,.12);color:var(--vio2);border-color:rgba(124,92,255,.4)}
+  button{font-family:inherit;background:rgba(124,92,255,.1);color:var(--txt);border:1px solid var(--line2);border-radius:10px;padding:9px 15px;cursor:pointer;font-size:14px;transition:.18s}
+  button:hover{background:rgba(124,92,255,.22);transform:translateY(-1px)}
+  button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+  button.primary{background:var(--grad);color:#fff;font-weight:700;border:none;width:100%;padding:15px;font-size:16.5px;border-radius:13px;box-shadow:0 8px 28px rgba(124,92,255,.45)}
+  button.primary:hover{filter:brightness(1.14)}
+  button.ghost{background:transparent}
+  #connectBtn{width:auto;padding:11px 22px;font-size:15px}
+  .addr{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--mut);word-break:break-all}
+  /* hero */
+  .hero{max-width:1120px;margin:0 auto;padding:44px 20px 8px;text-align:center}
+  .hero h1{font-size:clamp(38px,6.5vw,66px);margin:10px 0 12px;letter-spacing:-1.5px;line-height:1.04}
+  .hero h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .sub{color:var(--mut);max-width:680px;margin:0 auto;line-height:1.65;font-size:16.5px}
+  .herocta{margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .herocta button{width:auto}
+  /* stat cards */
+  .stats{max-width:1120px;margin:26px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;backdrop-filter:blur(12px);transition:.2s}
+  .stat:hover{border-color:var(--line2);transform:translateY(-2px)}
+  .stat .lbl{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.12em}
+  .stat .big{font-size:26px;font-weight:700;margin-top:6px;font-family:'JetBrains Mono',monospace}
+  .stat .small{font-size:12.5px;color:var(--mut);margin-top:4px}
+  .live{color:var(--teal);font-weight:600}
+  .pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--teal);margin-right:6px;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,212,166,.5)}70%{box-shadow:0 0 0 8px rgba(0,212,166,0)}100%{box-shadow:0 0 0 0 rgba(0,212,166,0)}}
+  /* layout */
+  main{max-width:1120px;margin:0 auto;padding:20px 20px 60px}
+  .grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;align-items:start}
+  @media(max-width:900px){.grid2{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:16px 0;backdrop-filter:blur(12px);box-shadow:0 12px 40px rgba(0,0,0,.35)}
+  .card h2{margin:0 0 6px;font-size:20px;display:flex;align-items:center;gap:10px}
+  .card h2 .ic{font-size:19px}
+  .card .hint{color:var(--dim);font-size:13px;margin:0 0 14px;line-height:1.55}
+  .row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid rgba(140,120,255,.12);font-size:14px;align-items:center}
+  .row:last-child{border-bottom:none}
+  .k{color:var(--mut)} .v{font-family:'JetBrains Mono',monospace;word-break:break-all;text-align:right;font-size:13px}
+  a{color:var(--cyan);text-decoration:none} a:hover{text-decoration:underline}
+  ul{margin:8px 0 0;padding-left:18px;color:#c9d6e8;line-height:1.65;font-size:14px}
+  footer{text-align:center;color:var(--dim);font-size:12.5px;padding:28px 20px 40px;border-top:1px solid var(--line);max-width:1120px;margin:0 auto}
+  /* swap */
+  .tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .tabs button{flex:1;min-width:120px;padding:11px}
+  .tabs button.active{background:linear-gradient(92deg,rgba(124,92,255,.35),rgba(0,212,166,.25));border-color:var(--vio2);color:#fff;font-weight:700;box-shadow:inset 0 0 0 1px rgba(167,139,250,.35)}
+  .swapbox{background:rgba(10,8,28,.75);border:1px solid var(--line);border-radius:14px;padding:15px;margin:10px 0;transition:.2s}
+  .swapbox:focus-within{border-color:var(--vio2);box-shadow:0 0 0 3px rgba(124,92,255,.18)}
+  .swapbox label{display:block;font-size:12px;color:var(--mut);margin-bottom:7px;text-transform:uppercase;letter-spacing:.08em}
+  .amtrow{display:flex;gap:8px;align-items:center}
+  .amtrow input{flex:1;background:transparent;border:none;color:var(--txt);font-size:26px;font-family:'JetBrains Mono',monospace;min-width:0;outline:none}
+  .amtrow .sym{font-weight:700;font-size:17px;min-width:56px;text-align:right;background:rgba(124,92,255,.15);border:1px solid var(--line2);border-radius:999px;padding:6px 12px}
+  .bal{font-size:12.5px;color:var(--mut);margin-top:8px;display:flex;align-items:center;gap:6px}
+  .bal button{padding:2px 10px;font-size:11px;border-radius:999px}
+  .arrow{text-align:center;color:var(--vio2);font-size:20px;margin:2px 0}
+  .meta{font-size:13.5px;color:#c9d6e8;line-height:1.7;margin:10px 0}
+  .meta .k{color:var(--mut)}
+  .status{font-size:13.5px;margin-top:12px;line-height:1.6;word-break:break-word}
+  .status.ok{color:var(--teal)} .status.err{color:#ff7b72} .status.warn{color:#e3b341}
+  .slip{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mut);margin:10px 0;flex-wrap:wrap}
+  .slip input{width:70px;background:rgba(10,8,28,.8);border:1px solid var(--line2);color:var(--txt);border-radius:8px;padding:6px 8px;font-family:'JetBrains Mono',monospace}
+  /* forms */
+  .field{margin:12px 0}
+  .field label{display:block;font-size:12.5px;color:var(--mut);margin-bottom:6px;text-transform:uppercase;letter-spacing:.07em}
+  .field input,.field textarea{width:100%;background:rgba(10,8,28,.8);border:1px solid var(--line2);color:var(--txt);border-radius:11px;padding:12px;font-size:15px;font-family:inherit;outline:none}
+  .field input:focus,.field textarea:focus{border-color:var(--vio2);box-shadow:0 0 0 3px rgba(124,92,255,.18)}
+  .genrow{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+  .genrow canvas{border-radius:14px;border:1px solid var(--line2);background:#0a081c}
+  /* feed / lists */
+  .feed{max-height:340px;overflow:auto}
+  .feed .row{font-size:13px}
+  .tag{font-size:11px;padding:2px 8px;border-radius:999px;font-weight:700}
+  .tag.buy{background:rgba(0,212,166,.14);color:var(--teal);border:1px solid rgba(0,212,166,.4)}
+  .tag.sell{background:rgba(244,114,182,.12);color:var(--pink);border:1px solid rgba(244,114,182,.4)}
+  .tag.new{background:rgba(56,189,248,.12);color:var(--cyan);border:1px solid rgba(56,189,248,.4)}
+  .tokrow{cursor:pointer}
+  .tokrow:hover{background:rgba(124,92,255,.07)}
+  .rank{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:rgba(124,92,255,.18);border:1px solid var(--line2);font-weight:700;font-size:13px;margin-right:8px}
+  .rank.r1{background:linear-gradient(135deg,#f59e0b,#facc15);color:#231a00;border:none}
+  .rank.r2{background:linear-gradient(135deg,#cbd5e1,#94a3b8);color:#111827;border:none}
+  .rank.r3{background:linear-gradient(135deg,#d97706,#b45309);color:#fff7ed;border:none}
+  /* lifecycle */
+  .steps{display:flex;gap:0;margin:16px 0 6px;flex-wrap:wrap}
+  .step{flex:1;min-width:130px;text-align:center;position:relative;padding:0 6px}
+  .step .dot{width:34px;height:34px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;background:rgba(124,92,255,.12);border:2px solid var(--line2);font-weight:700;position:relative;z-index:1}
+  .step.done .dot{background:var(--grad);border:none;color:#fff}
+  .step.now .dot{border-color:var(--teal);box-shadow:0 0 16px rgba(0,212,166,.5)}
+  .step::before{content:"";position:absolute;top:17px;left:-50%;width:100%;height:2px;background:var(--line2);z-index:0}
+  .step:first-child::before{display:none}
+  .step .t{font-size:13.5px;font-weight:600}
+  .step .d{font-size:12px;color:var(--dim);margin-top:2px}
+  .progbar{height:10px;border-radius:999px;background:rgba(124,92,255,.14);overflow:hidden;margin:10px 0 4px}
+  .progbar>div{height:100%;background:var(--grad);border-radius:999px;transition:width 1s ease}
+  /* timeline */
+  .tl{position:relative;margin-left:10px;padding-left:22px;border-left:2px solid var(--line2)}
+  .tl .item{position:relative;padding:9px 0;font-size:14px}
+  .tl .item::before{content:"";position:absolute;left:-29px;top:15px;width:12px;height:12px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px rgba(0,212,166,.6)}
+  .tl .item .sub2{color:var(--mut);font-size:12.5px}
+  .copybtn{padding:2px 9px;font-size:11px;border-radius:999px;margin-left:6px}
+  canvas.chart{width:100%;height:220px;display:block}
+  canvas.curve{width:100%;height:260px;display:block}
+  .charttip{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--mut);min-height:18px;margin-top:6px}
+  .pfgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+  .pf{background:rgba(10,8,28,.7);border:1px solid var(--line);border-radius:13px;padding:13px;text-align:center}
+  .pf .s{font-size:12px;color:var(--dim);letter-spacing:.08em}
+  .pf .a{font-family:'JetBrains Mono',monospace;font-size:16.5px;font-weight:700;margin-top:4px;word-break:break-all}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
+  .sharebox{display:none;margin-top:14px;text-align:center}
+  .sharebox canvas{max-width:100%;border-radius:14px;border:1px solid var(--line2)}
+  .sharebtns{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+  .sharebtns button,.sharebtns a.btn{width:auto}
+  a.btn{display:inline-block;background:rgba(124,92,255,.1);color:var(--txt);border:1px solid var(--line2);border-radius:10px;padding:9px 15px;font-size:14px}
+  a.btn:hover{text-decoration:none;background:rgba(124,92,255,.22)}
 </style>
 </head>
 <body>
-<header>
-  <h1><span>GiwaLaunch</span></h1>
+<div class="aurora"></div><div class="glow a"></div><div class="glow b"></div>
+<canvas id="confetti"></canvas>
+
+<div class="tickerwrap"><div class="ticker" id="ticker"><span class="tickitem">Loading live activity from GIWA Sepolia…</span></div></div>
+
+<header class="fade">
+  <a class="logo" href="#">
+    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="48" y2="48"><stop stop-color="#7c5cff"/><stop offset=".55" stop-color="#b04dff"/><stop offset="1" stop-color="#00d4a6"/></linearGradient></defs>
+      <path d="M24 3 41 13v22L24 45 7 35V13L24 3Z" stroke="url(#lg)" stroke-width="3" fill="rgba(124,92,255,.12)"/>
+      <path d="M24 13c3.2 3.4 4.6 7.6 4.4 12.2l3.4 3.4-4.6.6c-.7 2-1.7 3.8-3.2 5.3-1.5-1.5-2.5-3.3-3.2-5.3l-4.6-.6 3.4-3.4C19.4 20.6 20.8 16.4 24 13Z" fill="url(#lg)"/>
+      <circle cx="24" cy="22" r="2.2" fill="#0a0720"/>
+    </svg>
+    <span class="name">Giwa<span>Launch</span></span>
+  </a>
+  <span class="badge">GIWA Sepolia · Chain 91342 · Testnet</span>
+  <div class="headright">
+    <button class="ghost" onclick="addChain()">Add GIWA Sepolia</button>
+    <button id="connectBtn" class="primary" onclick="connectWallet()">Connect Wallet</button>
+  </div>
+  <div class="addr" id="walletAddr" style="width:100%;text-align:right"></div>
+</header>
+
+<section class="hero fade">
+  <span class="badge vio">Built with Ammora SDK 0.3.9</span>
+  <h1>Launch tokens.<br><span>Trade them live.</span></h1>
   <p class="sub">A token launchpad built with the Ammora SDK 0.3.9 on GIWA Sepolia testnet.
   Create a Config, issue a token on a bonding curve, trade pre-graduation, then migrate to a concentrated pool.
   Trade GLT and tAMM directly from this page.</p>
-  <p><span class="badge">GIWA Sepolia · Chain 91342 · Testnet</span></p>
-  <button id="connectBtn" class="primary" style="max-width:320px" onclick="connectWallet()">Connect Wallet</button>
-  <div class="addr" id="walletAddr"></div>
-</header>
+  <div class="herocta">
+    <button class="primary" style="width:auto;padding:13px 26px" onclick="document.getElementById('createCard').scrollIntoView({behavior:'smooth'})">🚀 Create a token</button>
+    <button onclick="document.getElementById('swapCard').scrollIntoView({behavior:'smooth'})">⇅ Swap now</button>
+    <a class="btn" href="https://faucet.giwa.io/" target="_blank" rel="noopener">💧 Get testnet ETH</a>
+  </div>
+</section>
+
+<section class="stats fade">
+  <div class="stat"><div class="lbl"><span class="pulse"></span>Latest block</div><div class="big" id="blockNumber">—</div><div class="small">GIWA Sepolia · <span class="live" id="liveStatus">loading…</span></div></div>
+  <div class="stat"><div class="lbl">GLT price</div><div class="big" id="gltPrice">—</div><div class="small">WETH per GLT · graduated pool</div></div>
+  <div class="stat"><div class="lbl">tAMM price</div><div class="big" id="tammPrice">—</div><div class="small">ETH per tAMM · native pool</div></div>
+  <div class="stat"><div class="lbl">Tokens launched (Config 76)</div><div class="big" id="launchCount">—</div><div class="small">via GiwaLaunch Config #76</div></div>
+</section>
+
 <main>
-  <div class="card" id="swapCard">
-    <h2>Swap</h2>
+<div class="grid2">
+<div>
+  <div class="card fade" id="swapCard">
+    <h2><span class="ic">⇅</span> Swap</h2>
+    <p class="hint">Live quotes straight from the pools. Approvals are exact-amount only.</p>
     <div class="tabs">
       <button id="pairGlt" class="active" onclick="setPair('GLT')">GLT / WETH</button>
       <button id="pairTamm" onclick="setPair('TAMM')">tAMM / ETH</button>
+      <button id="pairCustom" style="display:none" onclick="setPair('CUSTOM')"></button>
     </div>
     <div class="tabs">
       <button id="sideBuy" class="active" onclick="setSide('buy')">Buy</button>
@@ -101,13 +252,104 @@
     <button id="wrapBtn" style="display:none;width:100%;margin-bottom:10px" onclick="wrapEth()">Wrap ETH → WETH</button>
     <button id="actionBtn" class="primary" onclick="doSwap()">Connect wallet to swap</button>
     <div class="status" id="swapStatus"></div>
-    <p style="font-size:12px;color:#63738c;margin-top:12px">Quotes are read live from the pool via <code>quoteExactIn</code>. Approvals are exact-amount only.
+    <p style="font-size:12px;color:var(--dim);margin-top:12px">Quotes are read live from the pool via <code>quoteExactIn</code>. Approvals are exact-amount only.
     GLT trades execute on the graduated pool; tAMM trades route through the Ammora native router (ETH in / ETH out).</p>
+    <div class="sharebox" id="shareBox">
+      <canvas id="shareCanvas" width="1200" height="630"></canvas>
+      <div class="sharebtns">
+        <button onclick="downloadShareCard()">⬇ Download share card</button>
+        <a class="btn" id="tweetBtn" href="#" target="_blank" rel="noopener">𝕏 Share on X</a>
+      </div>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>Live on-chain data <span class="live" id="liveStatus">loading…</span></h2>
-    <div class="row"><span class="k">Latest block</span><span class="v" id="blockNumber">—</span></div>
+  <div class="card fade">
+    <h2><span class="ic">📈</span> Live price chart</h2>
+    <p class="hint">Sampled from pool <code>Sync</code> reserves on-chain, refreshed every 15s. Hover to inspect.</p>
+    <div class="tabs">
+      <button id="chartGlt" class="active" onclick="setChart('GLT')">GLT / WETH</button>
+      <button id="chartTamm" onclick="setChart('TAMM')">tAMM / ETH</button>
+    </div>
+    <canvas class="chart" id="priceChart" width="900" height="440"></canvas>
+    <div class="charttip" id="chartTip">Loading price history…</div>
+  </div>
+
+  <div class="card fade">
+    <h2><span class="ic">🧮</span> Bonding curve visualizer — GLT</h2>
+    <p class="hint">Price vs tokens sold along the GLT bonding curve, rebuilt from on-chain curve swaps. Hover to read the price at any point.</p>
+    <canvas class="curve" id="curveChart" width="900" height="520"></canvas>
+    <div class="charttip" id="curveTip">Loading curve history…</div>
+    <div class="steps" id="lifecycleSteps">
+      <div class="step done"><div class="dot">1</div><div class="t">Bonding curve</div><div class="d">ALC pre-graduation trading</div></div>
+      <div class="step done"><div class="dot">2</div><div class="t">Migration ready</div><div class="d">0.0005 WETH threshold crossed</div></div>
+      <div class="step now"><div class="dot">3</div><div class="t">Graduated pool</div><div class="d">Concentrated ARL pool live</div></div>
+    </div>
+    <div class="progbar"><div id="gradProgress" style="width:0%"></div></div>
+    <div class="charttip" id="gradLabel">Graduation progress: —</div>
+  </div>
+</div>
+
+<div>
+  <div class="card fade" id="portfolioCard">
+    <h2><span class="ic">👛</span> Portfolio</h2>
+    <p class="hint" id="pfHint">Connect a wallet to see your GIWA Sepolia balances.</p>
+    <div class="pfgrid">
+      <div class="pf"><div class="s">ETH</div><div class="a" id="pfEth">—</div></div>
+      <div class="pf"><div class="s">WETH</div><div class="a" id="pfWeth">—</div></div>
+      <div class="pf"><div class="s">GLT</div><div class="a" id="pfGlt">—</div></div>
+      <div class="pf"><div class="s">tAMM</div><div class="a" id="pfTamm">—</div></div>
+    </div>
+  </div>
+
+  <div class="card fade">
+    <h2><span class="ic">🔥</span> Trending — Config 76 tokens</h2>
+    <p class="hint">Launched via GiwaLaunch Config #76, ranked by on-chain swap activity. Click a token to trade it.</p>
+    <div id="tokenList"><div class="row"><span class="k">Scanning LaunchCreated events…</span></div></div>
+  </div>
+
+  <div class="card fade">
+    <h2><span class="ic">⚡</span> Recent swaps</h2>
+    <p class="hint">Latest trades from the GLT pool, tAMM pool and GLT curve.</p>
+    <div class="feed" id="swapFeed"><div class="row"><span class="k">Loading…</span></div></div>
+  </div>
+</div>
+</div>
+
+  <div class="card fade" id="createCard">
+    <h2><span class="ic">🚀</span> Create your token</h2>
+    <p class="hint">Launch a brand-new token on GiwaLaunch Config #76 — bonding curve, fees and graduation policy included.
+    Need inspiration? Generate a name + logo, then launch. Simulation runs first; nothing is sent until you confirm in your wallet.</p>
+
+    <div class="field">
+      <label>✨ Token name + logo generator — type a theme</label>
+      <div class="genrow">
+        <div style="flex:1;min-width:220px">
+          <input id="genTheme" type="text" placeholder="e.g. dragon, moon, coffee, rocket…" onkeydown="if(event.key==='Enter')generateTokenIdea()">
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+            <button onclick="generateTokenIdea()">🎲 Generate</button>
+            <button class="ghost" onclick="generateTokenIdea()">↻ Another one</button>
+          </div>
+          <div class="meta" id="genOut">Your generated name, symbol and description will fill the form below.</div>
+        </div>
+        <canvas id="logoCanvas" width="256" height="256"></canvas>
+      </div>
+    </div>
+
+    <div class="field"><label>Token name</label><input id="ctName" type="text" placeholder="e.g. GiwaLaunch Token"></div>
+    <div class="field"><label>Symbol</label><input id="ctSymbol" type="text" placeholder="e.g. GLT" maxlength="12"></div>
+    <div class="field"><label>Description (stored in metadata)</label><textarea id="ctDesc" rows="2" placeholder="What is this token about?"></textarea></div>
+    <div class="field"><label>First buy (WETH, optional — buys on the curve right after launch)</label><input id="ctFirstBuy" type="text" inputmode="decimal" placeholder="0.0"></div>
+    <div class="meta" id="ctMeta">Config #76 · 9 decimals · pool creation fee 0 ETH · metadata: this site's token.json</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button onclick="simulateLaunch()" style="flex:1;min-width:180px">🔍 Simulate launch</button>
+      <button class="primary" style="flex:2;min-width:220px;width:auto" onclick="doLaunch()">🚀 Launch token</button>
+    </div>
+    <div class="status" id="ctStatus"></div>
+  </div>
+
+  <div class="card fade">
+    <h2><span class="ic">📡</span> Live on-chain data <span class="live" id="liveStatus2">loading…</span></h2>
+    <div class="row"><span class="k">Latest block</span><span class="v" id="blockNumber2">—</span></div>
     <div class="row"><span class="k">GLT total supply</span><span class="v" id="totalSupply">—</span></div>
     <div class="row"><span class="k">GLT in graduated pool</span><span class="v" id="poolGlt">—</span></div>
     <div class="row"><span class="k">WETH in graduated pool</span><span class="v" id="poolWeth">—</span></div>
@@ -117,31 +359,34 @@
     <p style="margin-top:12px"><button onclick="refresh()">Refresh</button></p>
   </div>
 
-  <div class="card">
-    <h2>Launchpad contracts</h2>
+  <div class="card fade">
+    <h2><span class="ic">🧾</span> Launchpad contracts</h2>
     <div class="row"><span class="k">Config ID</span><span class="v">76</span></div>
     <div class="row"><span class="k">Config hash</span><span class="v">0x3a91c9e8a4a52fd644e6ac4b5e366633d8787dada53b7b540772ed46ae393fc7</span></div>
-    <div class="row"><span class="k">Token (GiwaLaunch Token · GLT)</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x3e6959a94f9459af88646577d986588dc7a38c01" target="_blank" rel="noopener">0x3e6959a94f9459af88646577d986588dc7a38c01</a></span></div>
-    <div class="row"><span class="k">Bonding curve (ALC)</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x4f7dea26e055b9138dfd599dde9fdc0cdc293993" target="_blank" rel="noopener">0x4f7dea26e055b9138dfd599dde9fdc0cdc293993</a></span></div>
-    <div class="row"><span class="k">Graduated pool (GLT/WETH)</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x8627e8088c26302c261886AD15AE979204c04CBD" target="_blank" rel="noopener">0x8627e8088c26302c261886AD15AE979204c04CBD</a></span></div>
-    <div class="row"><span class="k">tAMM token</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x10B3Cc2fc981277Ada576891CF649D0ABA768B06" target="_blank" rel="noopener">0x10B3Cc2fc981277Ada576891CF649D0ABA768B06</a></span></div>
-    <div class="row"><span class="k">tAMM/WETH pool</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x1ef92a6a9bb4bbed2b385dd5e688f88e7965bcf8" target="_blank" rel="noopener">0x1ef92a6a9bb4bbed2b385dd5e688f88e7965bcf8</a></span></div>
-    <div class="row"><span class="k">Ammora native router</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x4FC91b90087288520A7bB4aA7Ab5441bb4E9C496" target="_blank" rel="noopener">0x4FC91b90087288520A7bB4aA7Ab5441bb4E9C496</a></span></div>
-    <div class="row"><span class="k">Creator / Config owner</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x2223C33409A353c5FD304629476fde06945C15A5" target="_blank" rel="noopener">0x2223C33409A353c5FD304629476fde06945C15A5</a></span></div>
+    <div class="row"><span class="k">Launch factory</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x35353a2Dab7426EcCAe6f5FB267702a542ab68fA" target="_blank" rel="noopener">0x35353a2Dab7426EcCAe6f5FB267702a542ab68fA</a><button class="copybtn" onclick="copyText('0x35353a2Dab7426EcCAe6f5FB267702a542ab68fA',this)">copy</button></span></div>
+    <div class="row"><span class="k">Token (GiwaLaunch Token · GLT)</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x3e6959a94f9459af88646577d986588dc7a38c01" target="_blank" rel="noopener">0x3e6959a94f9459af88646577d986588dc7a38c01</a><button class="copybtn" onclick="copyText('0x3e6959a94f9459af88646577d986588dc7a38c01',this)">copy</button></span></div>
+    <div class="row"><span class="k">Bonding curve (ALC)</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x4f7dea26e055b9138dfd599dde9fdc0cdc293993" target="_blank" rel="noopener">0x4f7dea26e055b9138dfd599dde9fdc0cdc293993</a><button class="copybtn" onclick="copyText('0x4f7dea26e055b9138dfd599dde9fdc0cdc293993',this)">copy</button></span></div>
+    <div class="row"><span class="k">Graduated pool (GLT/WETH)</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x8627e8088c26302c261886AD15AE979204c04CBD" target="_blank" rel="noopener">0x8627e8088c26302c261886AD15AE979204c04CBD</a><button class="copybtn" onclick="copyText('0x8627e8088c26302c261886AD15AE979204c04CBD',this)">copy</button></span></div>
+    <div class="row"><span class="k">tAMM token</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x10B3Cc2fc981277Ada576891CF649D0ABA768B06" target="_blank" rel="noopener">0x10B3Cc2fc981277Ada576891CF649D0ABA768B06</a><button class="copybtn" onclick="copyText('0x10B3Cc2fc981277Ada576891CF649D0ABA768B06',this)">copy</button></span></div>
+    <div class="row"><span class="k">tAMM/WETH pool</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x1ef92a6a9bb4bbed2b385dd5e688f88e7965bcf8" target="_blank" rel="noopener">0x1ef92a6a9bb4bbed2b385dd5e688f88e7965bcf8</a><button class="copybtn" onclick="copyText('0x1ef92a6a9bb4bbed2b385dd5e688f88e7965bcf8',this)">copy</button></span></div>
+    <div class="row"><span class="k">Ammora native router</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x4FC91b90087288520A7bB4aA7Ab5441bb4E9C496" target="_blank" rel="noopener">0x4FC91b90087288520A7bB4aA7Ab5441bb4E9C496</a><button class="copybtn" onclick="copyText('0x4FC91b90087288520A7bB4aA7Ab5441bb4E9C496',this)">copy</button></span></div>
+    <div class="row"><span class="k">Creator / Config owner</span><span class="v"><a href="https://sepolia-explorer.giwa.io/address/0x2223C33409A353c5FD304629476fde06945C15A5" target="_blank" rel="noopener">0x2223C33409A353c5FD304629476fde06945C15A5</a><button class="copybtn" onclick="copyText('0x2223C33409A353c5FD304629476fde06945C15A5',this)">copy</button></span></div>
   </div>
 
-  <div class="card">
-    <h2>Proof of lifecycle (all on GIWA Sepolia)</h2>
-    <div class="row"><span class="k">Create Config #76</span><span class="v"><a href="https://sepolia-explorer.giwa.io/tx/0xcace7484ce924cbc6ae92954ce018698a4049a1478c614660c40e14b72c043fe" target="_blank" rel="noopener">tx</a></span></div>
-    <div class="row"><span class="k">Launch GLT token + curve</span><span class="v"><a href="https://sepolia-explorer.giwa.io/tx/0xa8aa240478456e9a49086f54aeb87599602b9774d73c013cf94d031bda53bfea" target="_blank" rel="noopener">tx</a></span></div>
-    <div class="row"><span class="k">First buy: 0.001 WETH → 496,855.345911949 GLT</span><span class="v"><a href="https://sepolia-explorer.giwa.io/tx/0x9754930b9a5f10b9db79da58779b7e94c27a133238786c99abcda47846272aae" target="_blank" rel="noopener">tx</a></span></div>
-    <div class="row"><span class="k">Graduation migration</span><span class="v"><a href="https://sepolia-explorer.giwa.io/tx/0x79205b65c22f5608604a57050618e40988979a7e931ae6b8c307d13cf70fea94" target="_blank" rel="noopener">tx</a></span></div>
-    <div class="row"><span class="k">Post-graduation sell: 100,000 GLT → 0.000198796780684104 WETH</span><span class="v"><a href="https://sepolia-explorer.giwa.io/tx/0xdbd70907e65e8d96990c6d78acc3cbeba34716f2e623e3595be9e1133cbbbc2c" target="_blank" rel="noopener">tx</a></span></div>
-    <div class="row"><span class="k">tAMM sell via native router: 5,000 tAMM → ~12 ETH</span><span class="v"><a href="https://sepolia-explorer.giwa.io/tx/0x8225893660f4631cab83909e57ccb65927255f8c4207575bca88de279f2d6ee1" target="_blank" rel="noopener">tx</a></span></div>
+  <div class="card fade">
+    <h2><span class="ic">🏆</span> Proof of lifecycle (all on GIWA Sepolia)</h2>
+    <div class="tl">
+      <div class="item"><b>Create Config #76</b> <span class="sub2">— immutable launch policy registered</span> · <a href="https://sepolia-explorer.giwa.io/tx/0xcace7484ce924cbc6ae92954ce018698a4049a1478c614660c40e14b72c043fe" target="_blank" rel="noopener">tx</a></div>
+      <div class="item"><b>Launch GLT token + curve</b> <span class="sub2">— GiwaLaunch Token issued</span> · <a href="https://sepolia-explorer.giwa.io/tx/0xa8aa240478456e9a49086f54aeb87599602b9774d73c013cf94d031bda53bfea" target="_blank" rel="noopener">tx</a></div>
+      <div class="item"><b>First buy: 0.001 WETH → 496,855.345911949 GLT</b> <span class="sub2">— crossed the graduation threshold</span> · <a href="https://sepolia-explorer.giwa.io/tx/0x9754930b9a5f10b9db79da58779b7e94c27a133238786c99abcda47846272aae" target="_blank" rel="noopener">tx</a></div>
+      <div class="item"><b>Graduation migration</b> <span class="sub2">— liquidity moved to the concentrated pool</span> · <a href="https://sepolia-explorer.giwa.io/tx/0x79205b65c22f5608604a57050618e40988979a7e931ae6b8c307d13cf70fea94" target="_blank" rel="noopener">tx</a></div>
+      <div class="item"><b>Post-graduation sell: 100,000 GLT → 0.000198796780684104 WETH</b> <span class="sub2">— pool trading proven</span> · <a href="https://sepolia-explorer.giwa.io/tx/0xdbd70907e65e8d96990c6d78acc3cbeba34716f2e623e3595be9e1133cbbbc2c" target="_blank" rel="noopener">tx</a></div>
+      <div class="item"><b>tAMM sell via native router: 5,000 tAMM → ~12 ETH</b> <span class="sub2">— native ETH out in one call</span> · <a href="https://sepolia-explorer.giwa.io/tx/0x8225893660f4631cab83909e57ccb65927255f8c4207575bca88de279f2d6ee1" target="_blank" rel="noopener">tx</a></div>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>How GiwaLaunch works</h2>
+  <div class="card fade">
+    <h2><span class="ic">🧠</span> How GiwaLaunch works</h2>
     <ul>
       <li><b>Config first:</b> the launchpad registers an immutable Config (fees, recipients, graduation policy) in the Ammora Config Registry. GiwaLaunch Config #76 uses concentrated graduation with a 0.0005 WETH quote threshold and zero base threshold.</li>
       <li><b>Issue:</b> a creator launches a token + pre-graduation bonding curve (ALC) in one transaction through the Launch Factory.</li>
@@ -152,7 +397,7 @@
     </ul>
   </div>
 </main>
-<footer>GiwaLaunch · Built with Ammora SDK 0.3.9 · Testnet only — no real funds</footer>
+<footer>GiwaLaunch · Built with Ammora SDK 0.3.9 · GIWA Sepolia testnet — no real funds · <a href="https://sepolia-explorer.giwa.io" target="_blank" rel="noopener">Explorer</a> · <a href="https://faucet.giwa.io/" target="_blank" rel="noopener">Faucet</a></footer>
 <script>
 const RPC = 'https://sepolia-rpc-flashblocks.giwa.io';
 const EXPLORER = 'https://sepolia-explorer.giwa.io';
@@ -160,9 +405,14 @@ const CHAIN_ID = 91342;
 const GLT = '0x3e6959a94f9459af88646577d986588dc7a38c01';
 const WETH = '0x4200000000000000000000000000000000000006';
 const GLT_POOL = '0x8627e8088c26302c261886AD15AE979204c04CBD';
+const GLT_CURVE = '0x4f7dea26e055b9138dfd599dde9fdc0cdc293993';
 const TAMM = '0x10B3Cc2fc981277Ada576891CF649D0ABA768B06';
 const TAMM_POOL = '0x1ef92a6a9bb4bbed2b385dd5e688f88e7965bcf8';
 const ROUTER = '0x4FC91b90087288520A7bB4aA7Ab5441bb4E9C496';
+const FACTORY = '0x35353a2Dab7426EcCAe6f5FB267702a542ab68fA';
+const CONFIG_ID = 76n;
+const TOKEN_DECIMALS = 9;
+const METADATA_URI = 'https://cuucuan.github.io/giwalaunch/token.json';
 const ZERO = '0x0000000000000000000000000000000000000000';
 const DEC = { GLT: 9, WETH: 18, TAMM: 6, ETH: 18 };
 
@@ -171,6 +421,9 @@ const ERC20_ABI = [
   'function allowance(address,address) view returns (uint256)',
   'function approve(address,uint256) returns (bool)',
   'function totalSupply() view returns (uint256)',
+  'function name() view returns (string)',
+  'function symbol() view returns (string)',
+  'function decimals() view returns (uint8)',
 ];
 const WETH_ABI = ERC20_ABI.concat(['function deposit() payable']);
 const POOL_ABI = [
@@ -182,29 +435,91 @@ const ROUTER_ABI = [
   'function swapPoolExactInNative(address pool, uint256 minimumAmountOut, address recipient, uint256 deadline, address referrer) payable returns (uint256)',
   'function swapPoolExactInForNative(address pool, address tokenIn, uint256 amountIn, uint256 minimumNativeOut, address recipient, uint256 deadline, address referrer) returns (uint256)',
 ];
+const FACTORY_ABI = [
+  'function createLaunchWithTokenConfig(string name, string symbol, string metadataURI, string creatorMetadataURI, uint256 configId, uint8 tokenDecimals) payable',
+  'function curveForToken(address token) view returns (address)',
+  'function tokenForCurve(address curve) view returns (address)',
+  'event LaunchCreated(address indexed token, address indexed curve, address indexed creator, uint256 configId, bytes32 configHash, uint16 protocolVersion, string metadataURI)',
+];
+const CURVE_ABI = [
+  'function quoteExactInput(uint256 includedAmountIn, bool baseForQuote) view returns (tuple(uint256 amountIn, uint256 amountOut, uint256 amountLeft, uint128 nextSqrtPrice) result, uint256 fee)',
+  'function swapExactInput(uint256 includedAmountIn, uint256 minimumAmountOut, bool baseForQuote, bool allowPartialFill, address recipient, uint256 deadline) returns (tuple(uint256 amountIn, uint256 amountOut, uint256 amountLeft, uint128 nextSqrtPrice) result)',
+  'function status() view returns (uint8)',
+  'function sqrtPrice() view returns (uint128)',
+  'function baseReserve() view returns (uint256)',
+  'function quoteReserve() view returns (uint256)',
+  'function migrationQuoteThreshold() view returns (uint256)',
+  'function canonicalPool() view returns (address)',
+  'function baseToken() view returns (address)',
+  'function quoteToken() view returns (address)',
+  'event Swap(address indexed trader, bool indexed baseForQuote, bool exactInput, uint256 amountIn, uint256 amountOut, uint256 fee, uint256 amountLeft, uint128 nextSqrtPrice, address recipient)',
+  'event MigrationReady(uint128 sqrtPrice, uint256 baseReserve, uint256 quoteReserve)',
+];
+const POOL_EVENTS_GLT = [
+  'event Swap(address indexed sender, address indexed tokenIn, uint256 amountIn, uint256 amountOut, uint256 protocolFee, uint256 protocolFee2, uint256 referralFee, uint256 creatorFee, uint256 lpFee, uint128 sqrtPrice, address indexed recipient)',
+  'event Sync(uint256 reserveBase, uint256 reserveQuote, uint128 sqrtPrice)',
+];
+const POOL_EVENTS_TAMM = [
+  'event Swap(address indexed sender, address indexed tokenIn, uint256 amountIn, uint256 amountOut, uint256 protocolFee, uint256 protocolFee2, uint256 creatorFee, uint256 referralFee, uint256 claimingFee, uint256 compoundingFee, uint128 sqrtPrice, address indexed recipient)',
+  'event Sync(uint256 reserveBase, uint256 reserveQuote, uint128 sqrtPrice)',
+];
+const TOPIC = {
+  launchCreated: '0x0d8c51804d67b6aa256e855176d3b6f5d0cc3657138b63947cc9eb5a1908d00a',
+  poolSwapGlt: '0x1b3938c1fe76d448ce5576c5b981d83a3a387a6987827fa60ccefa25a71eed32',
+  poolSwapTamm: '0xfaeac6a85d6f8d50a78e65608c180e081da9e273e6ca795c2981887b7f66c802',
+  sync: '0x4a004b478e40e5f6c35a073352fc715b166d29b3767941753c5819dc2f380ef9',
+  curveSwap: '0x5d0b37a82cfe505a2d677b983184515b99431597e5d3a1f3e3512117094b44a3',
+  migrationReady: '0xf6bbb848d379017c5e39622244a746de3b2af733e708d3a1c56d9cf7684b563c',
+};
+const CONFIG_BLOCK = 41944277;
 
 const readProvider = new ethers.JsonRpcProvider(RPC);
 let walletProvider = null, signer = null, userAddr = null;
 let pair = 'GLT', side = 'buy';
 let lastQuote = null, lastAmountIn = null, quoteTimer = null;
 let balances = { ETH: 0n, WETH: 0n, GLT: 0n, TAMM: 0n };
+let customToken = null; // {token, symbol, decimals, pool, curve, status}
+let lastPrices = { GLT: null, TAMM: null };
 
 function $(id) { return document.getElementById(id); }
 function setStatus(msg, cls) { const s = $('swapStatus'); s.innerHTML = msg; s.className = 'status ' + (cls || ''); }
+function setCtStatus(msg, cls) { const s = $('ctStatus'); s.innerHTML = msg; s.className = 'status ' + (cls || ''); }
 function txLink(hash) { return '<a href="' + EXPLORER + '/tx/' + hash + '" target="_blank" rel="noopener">' + hash.slice(0, 10) + '…' + hash.slice(-8) + '</a>'; }
+function shortAddr(a) { return a ? a.slice(0, 6) + '…' + a.slice(-4) : '—'; }
 function shortErr(e) {
   let m = (e && (e.shortMessage || e.reason || e.message)) || String(e);
   if (/PriceRangeViolation/.test(m)) return 'Amount exceeds the pool price range / available liquidity. Try a smaller amount.';
   if (/user rejected|User denied/i.test(m)) return 'Transaction rejected in wallet.';
   return m.slice(0, 240);
 }
+function copyText(t, btn) {
+  const done = () => { if (btn) { const o = btn.textContent; btn.textContent = 'copied ✓'; setTimeout(() => btn.textContent = o, 1200); } };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done).catch(done); else done();
+}
+function fmtNum(x, d) {
+  const n = Number(x);
+  if (!isFinite(n)) return '—';
+  if (n !== 0 && Math.abs(n) < 0.000001) return n.toFixed(10).replace(/0+$/, '').replace(/\.$/, '');
+  return n.toLocaleString('en-US', { maximumFractionDigits: d == null ? 6 : d });
+}
 
 function tokensFor() {
+  if (pair === 'CUSTOM' && customToken) {
+    const sym = customToken.symbol;
+    return side === 'buy'
+      ? { inSym: 'WETH', outSym: sym, tokenIn: WETH, pool: customToken.pool, outDec: customToken.decimals }
+      : { inSym: sym, outSym: 'WETH', tokenIn: customToken.token, pool: customToken.pool, outDec: 18 };
+  }
   if (pair === 'GLT') return side === 'buy' ? { inSym: 'WETH', outSym: 'GLT', tokenIn: WETH, pool: GLT_POOL } : { inSym: 'GLT', outSym: 'WETH', tokenIn: GLT, pool: GLT_POOL };
   return side === 'buy' ? { inSym: 'ETH', outSym: 'TAMM', tokenIn: WETH, pool: TAMM_POOL } : { inSym: 'TAMM', outSym: 'ETH', tokenIn: TAMM, pool: TAMM_POOL };
 }
+function decOf(sym) {
+  if (pair === 'CUSTOM' && customToken && sym === customToken.symbol) return customToken.decimals;
+  return DEC[sym] != null ? DEC[sym] : 18;
+}
 function spenderFor() {
   if (pair === 'GLT') return GLT_POOL;
+  if (pair === 'CUSTOM' && customToken) return customToken.pool;
   return ROUTER; // tAMM sell approves the router; tAMM buy is payable (no approval)
 }
 function needsApproval() {
@@ -216,6 +531,7 @@ function setPair(p) {
   pair = p;
   $('pairGlt').classList.toggle('active', p === 'GLT');
   $('pairTamm').classList.toggle('active', p === 'TAMM');
+  $('pairCustom').classList.toggle('active', p === 'CUSTOM');
   syncLabels(); onAmountInput();
 }
 function setSide(s) {
@@ -231,10 +547,14 @@ function syncLabels() {
   $('inLabel').textContent = side === 'buy' ? 'You pay' : 'You sell';
   updateBalanceLabels(); updateActionBtn();
 }
+function balOf(sym) {
+  if (pair === 'CUSTOM' && customToken && sym === customToken.symbol) return customToken.balance || 0n;
+  return balances[sym] || 0n;
+}
 function updateBalanceLabels() {
   const t = tokensFor();
-  $('inBal').textContent = userAddr ? ethers.formatUnits(balances[t.inSym], DEC[t.inSym]) + ' ' + t.inSym : '—';
-  $('outBal').textContent = userAddr ? ethers.formatUnits(balances[t.outSym], DEC[t.outSym]) + ' ' + t.outSym : '—';
+  $('inBal').textContent = userAddr ? ethers.formatUnits(balOf(t.inSym), decOf(t.inSym)) + ' ' + t.inSym : '—';
+  $('outBal').textContent = userAddr ? ethers.formatUnits(balOf(t.outSym), decOf(t.outSym)) + ' ' + t.outSym : '—';
   // Show wrap helper only for GLT buy when WETH balance is below the entered amount
   const showWrap = userAddr && pair === 'GLT' && side === 'buy' && lastAmountIn !== null && balances.WETH < lastAmountIn;
   $('wrapBtn').style.display = showWrap ? 'block' : 'none';
@@ -245,6 +565,18 @@ function updateActionBtn() {
   const t = tokensFor();
   b.textContent = (side === 'buy' ? 'Buy ' : 'Sell ') + (t.outSym === 'TAMM' ? 'tAMM' : t.outSym) + (side === 'sell' ? ' for ' + t.outSym : '');
   if (side === 'sell') b.textContent = 'Sell ' + (t.inSym === 'TAMM' ? 'tAMM' : t.inSym);
+}
+
+async function addChain() {
+  if (!window.ethereum) { setStatus('No EVM wallet found. Install MetaMask (or any injected wallet) and reload.', 'err'); return; }
+  try {
+    await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{
+      chainId: '0x' + CHAIN_ID.toString(16), chainName: 'GIWA Sepolia',
+      nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+      rpcUrls: [RPC], blockExplorerUrls: [EXPLORER],
+    }] });
+    setStatus('GIWA Sepolia added to your wallet.', 'ok');
+  } catch (e) { setStatus('Add chain failed: ' + shortErr(e), 'err'); }
 }
 
 async function connectWallet() {
@@ -285,15 +617,23 @@ async function loadBalances() {
     readProvider.getBalance(userAddr), weth.balanceOf(userAddr), glt.balanceOf(userAddr), tamm.balanceOf(userAddr),
   ]);
   balances = { ETH: eth, WETH: w, GLT: g, TAMM: t };
+  if (customToken) {
+    try { customToken.balance = await new ethers.Contract(customToken.token, ERC20_ABI, readProvider).balanceOf(userAddr); } catch {}
+  }
+  $('pfEth').textContent = fmtNum(ethers.formatEther(eth), 6);
+  $('pfWeth').textContent = fmtNum(ethers.formatUnits(w, 18), 6);
+  $('pfGlt').textContent = fmtNum(ethers.formatUnits(g, 9), 2);
+  $('pfTamm').textContent = fmtNum(ethers.formatUnits(t, 6), 2);
+  $('pfHint').textContent = 'Balances for ' + shortAddr(userAddr) + ' on GIWA Sepolia.';
   updateBalanceLabels();
 }
 
 function setMax() {
   const t = tokensFor();
   if (!userAddr) return;
-  let v = balances[t.inSym];
+  let v = balOf(t.inSym);
   if (t.inSym === 'ETH') v = v > ethers.parseEther('0.001') ? v - ethers.parseEther('0.001') : 0n; // keep gas
-  $('amtIn').value = ethers.formatUnits(v, DEC[t.inSym]);
+  $('amtIn').value = ethers.formatUnits(v, decOf(t.inSym));
   onAmountInput();
 }
 
@@ -315,7 +655,7 @@ async function updateQuote() {
   $('amtOut').value = '';
   if (!raw || isNaN(Number(raw)) || Number(raw) <= 0) { $('quoteMeta').textContent = 'Enter an amount to get a live quote.'; updateBalanceLabels(); return; }
   let amountIn;
-  try { amountIn = ethers.parseUnits(raw, DEC[t.inSym]); } catch { $('quoteMeta').textContent = 'Invalid amount.'; return; }
+  try { amountIn = ethers.parseUnits(raw, decOf(t.inSym)); } catch { $('quoteMeta').textContent = 'Invalid amount.'; return; }
   lastAmountIn = amountIn;
   $('quoteMeta').textContent = 'Fetching quote…';
   try {
@@ -324,13 +664,13 @@ async function updateQuote() {
     lastQuote = out;
     const bps = slippageBps();
     const minOut = out * BigInt(10000 - bps) / 10000n;
-    $('amtOut').value = ethers.formatUnits(out, DEC[t.outSym]);
-    const rate = Number(ethers.formatUnits(out, DEC[t.outSym])) / Number(raw);
+    $('amtOut').value = ethers.formatUnits(out, decOf(t.outSym));
+    const rate = Number(ethers.formatUnits(out, decOf(t.outSym))) / Number(raw);
     $('priceLine').textContent = '1 ' + t.inSym + ' ≈ ' + rate.toPrecision(6) + ' ' + t.outSym;
     $('quoteMeta').innerHTML = '<span class="k">Minimum received (' + (bps / 100) + '% slippage):</span> ' +
-      ethers.formatUnits(minOut, DEC[t.outSym]) + ' ' + t.outSym + '<br><span class="k">Route:</span> ' +
-      (pair === 'GLT' ? 'Graduated pool ' + GLT_POOL.slice(0, 10) + '…' : 'Native router → tAMM/WETH pool ' + TAMM_POOL.slice(0, 10) + '…');
-    if (userAddr && balances[t.inSym] < amountIn) {
+      ethers.formatUnits(minOut, decOf(t.outSym)) + ' ' + t.outSym + '<br><span class="k">Route:</span> ' +
+      (pair === 'GLT' ? 'Graduated pool ' + GLT_POOL.slice(0, 10) + '…' : pair === 'CUSTOM' ? 'Graduated pool ' + (t.pool || '').slice(0, 10) + '…' : 'Native router → tAMM/WETH pool ' + TAMM_POOL.slice(0, 10) + '…');
+    if (userAddr && balOf(t.inSym) < amountIn) {
       $('quoteMeta').innerHTML += '<br><span style="color:#e3b341">Insufficient ' + t.inSym + ' balance.</span>';
     }
   } catch (e) {
@@ -377,8 +717,8 @@ async function doSwap() {
     if (needsApproval()) await ensureAllowance(t.tokenIn, spenderFor(), amountIn);
     setStatus('Sending swap… confirm in wallet.');
     let tx;
-    if (pair === 'GLT') {
-      const pool = new ethers.Contract(GLT_POOL, POOL_ABI, signer);
+    if (pair === 'GLT' || pair === 'CUSTOM') {
+      const pool = new ethers.Contract(t.pool, POOL_ABI, signer);
       tx = await pool.swapExactIn(t.tokenIn, amountIn, minOut, userAddr, deadline);
     } else if (side === 'buy') {
       const router = new ethers.Contract(ROUTER, ROUTER_ABI, signer);
@@ -390,15 +730,17 @@ async function doSwap() {
     setStatus('Swap sent: ' + txLink(tx.hash) + ' — waiting for confirmation…');
     const rc = await tx.wait();
     setStatus('Swap confirmed in block ' + rc.blockNumber + ': ' + txLink(tx.hash), 'ok');
-    await loadBalances(); updateQuote(); refresh();
+    fireConfetti();
+    showShareCard(t.outSym === 'TAMM' ? 'tAMM' : t.outSym, side === 'buy' ? 'bought' : 'sold');
+    await loadBalances(); updateQuote(); refresh(); loadFeeds();
   } catch (e) { setStatus('Swap failed: ' + shortErr(e), 'err'); }
   btn.disabled = false;
 }
 
 async function refresh() {
-  const st = $('liveStatus');
+  const st = $('liveStatus'), st2 = $('liveStatus2');
   try {
-    st.textContent = 'loading…';
+    st.textContent = 'loading…'; st2.textContent = 'loading…';
     const glt = new ethers.Contract(GLT, ERC20_ABI, readProvider);
     const weth = new ethers.Contract(WETH, ERC20_ABI, readProvider);
     const tamm = new ethers.Contract(TAMM, ERC20_ABI, readProvider);
@@ -408,17 +750,499 @@ async function refresh() {
       gltPool.currentFeeBps().catch(() => null), tamm.balanceOf(TAMM_POOL), weth.balanceOf(TAMM_POOL),
     ]);
     $('blockNumber').textContent = block.toLocaleString('en-US');
+    $('blockNumber2').textContent = block.toLocaleString('en-US');
     $('totalSupply').textContent = ethers.formatUnits(supply, 9) + ' GLT';
     $('poolGlt').textContent = ethers.formatUnits(poolGlt, 9) + ' GLT';
     $('poolWeth').textContent = ethers.formatUnits(poolWeth, 18) + ' WETH';
     $('poolFee').textContent = fee === null ? '—' : (Number(fee) / 100) + '% (' + fee + ' bps)';
     $('tammPoolTamm').textContent = ethers.formatUnits(tpTamm, 6) + ' tAMM';
     $('tammPoolWeth').textContent = ethers.formatUnits(tpWeth, 18) + ' WETH';
-    st.textContent = 'live';
-  } catch (e) { st.textContent = 'RPC error: ' + shortErr(e); }
+    const gp = poolGlt > 0n ? Number(ethers.formatUnits(poolWeth, 18)) / Number(ethers.formatUnits(poolGlt, 9)) : null;
+    const tp = tpTamm > 0n ? Number(ethers.formatUnits(tpWeth, 18)) / Number(ethers.formatUnits(tpTamm, 6)) : null;
+    lastPrices.GLT = gp; lastPrices.TAMM = tp;
+    $('gltPrice').textContent = gp ? fmtNum(gp, 10) : '—';
+    $('tammPrice').textContent = tp ? fmtNum(tp, 8) : '—';
+    st.textContent = 'live'; st2.textContent = 'live';
+    pushLivePrice(block, gp, tp);
+  } catch (e) { st.textContent = 'RPC error: ' + shortErr(e); st2.textContent = 'RPC error'; }
 }
+</script>
+<script>
+/* ============ TOKEN NAME + LOGO GENERATOR ============ */
+const WORDS_A = ['Lunar','Solar','Cosmic','Neon','Velvet','Crystal','Quantum','Hyper','Turbo','Mega','Ultra','Nova','Astro','Cyber','Pixel','Echo','Drift','Pulse','Orbit','Zenith','Apex','Vortex','Nebula','Photon','Prisma','Onyx','Aurora','Blaze','Frost','Storm'];
+const WORDS_B = ['Dragon','Rocket','Whale','Tiger','Phoenix','Falcon','Wolf','Panda','Comet','Meteor','Harbor','Voyager','Pioneer','Knight','Wizard','Samurai','Voyage','Empire','Horizon','Cascade','Summit','Lagoon','Temple','Garden','Circuit','Signal','Beacon','Voyager','Harvest','Ember'];
+const WORDS_C = ['Coin','Token','Protocol','Network','Chain','Finance','Labs','DAO','Verse','Fi','Swap','Pad','X','One','AI'];
+const DESC_T = [
+  '{name} is a community token launched on GIWA Sepolia through GiwaLaunch — born on a bonding curve, built to graduate.',
+  'Meet {name}: a {theme}-powered token issued via the Ammora SDK on GIWA Sepolia. Trade it pre-graduation, ride it to the pool.',
+  '{name} brings {theme} energy to GIWA Sepolia. Launched fair on a bonding curve with GiwaLaunch Config #76.',
+  'The {theme} token of GIWA Sepolia. {name} launched on GiwaLaunch — curve first, concentrated pool next.',
+];
+function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function seededRand(seed) { let s = seed || 1; return () => { s = Math.imul(s ^ (s >>> 15), 2246822519); s = Math.imul(s ^ (s >>> 13), 3266489917); return ((s ^= s >>> 16) >>> 0) / 4294967296; }; }
+function cap(w) { return w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w; }
+
+function generateTokenIdea() {
+  const themeRaw = ($('genTheme').value || '').trim();
+  const theme = themeRaw ? cap(themeRaw.split(/\s+/)[0].replace(/[^a-zA-Z]/g, '')) : '';
+  const seed = hashStr((themeRaw || 'giwa') + ':' + Date.now() + ':' + Math.random());
+  const rnd = seededRand(seed);
+  const pick = (arr) => arr[Math.floor(rnd() * arr.length)];
+  const a = pick(WORDS_A), b = pick(WORDS_B), c = pick(WORDS_C);
+  const patterns = [
+    () => (theme ? theme + ' ' + b : a + ' ' + b),
+    () => (theme ? a + ' ' + theme : a + ' ' + b + ' ' + c),
+    () => (theme ? theme + c : b + ' ' + c),
+    () => a + ' ' + (theme || b),
+  ];
+  const name = patterns[Math.floor(rnd() * patterns.length)]().trim();
+  const initials = name.split(/\s+/).map(w => w.replace(/[^a-zA-Z]/g, '')).filter(Boolean).map(w => w[0].toUpperCase()).join('');
+  let symbol = (initials + name.replace(/[^a-zA-Z]/g, '').slice(0, 2).toUpperCase()).slice(0, 5);
+  if (symbol.length < 3) symbol = (symbol + 'GL').slice(0, 4);
+  const desc = pick(DESC_T).replace('{name}', name).replace('{theme}', (theme || 'giwa').toLowerCase());
+  $('ctName').value = name;
+  $('ctSymbol').value = symbol;
+  $('ctDesc').value = desc;
+  $('genOut').innerHTML = '<b>' + name + '</b> (' + symbol + ')<br>' + desc;
+  drawLogo(name, symbol);
+}
+
+function drawLogo(name, symbol) {
+  const cv = $('logoCanvas'), ctx = cv.getContext('2d');
+  const S = cv.width, seed = hashStr(name + '|' + symbol), rnd = seededRand(seed);
+  const h1 = Math.floor(rnd() * 360), h2 = (h1 + 60 + Math.floor(rnd() * 120)) % 360;
+  const g = ctx.createLinearGradient(0, 0, S, S);
+  g.addColorStop(0, 'hsl(' + h1 + ',85%,55%)'); g.addColorStop(1, 'hsl(' + h2 + ',85%,45%)');
+  ctx.clearRect(0, 0, S, S);
+  ctx.fillStyle = '#0a081c'; ctx.fillRect(0, 0, S, S);
+  // geometric emblem from hash
+  const cx = S / 2, cy = S / 2 - 14, R = S * 0.30;
+  const sides = 3 + Math.floor(rnd() * 5); // 3..7
+  ctx.beginPath();
+  for (let i = 0; i < sides; i++) {
+    const ang = (Math.PI * 2 * i) / sides - Math.PI / 2;
+    const x = cx + Math.cos(ang) * R, y = cy + Math.sin(ang) * R;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fillStyle = g; ctx.globalAlpha = 0.92; ctx.fill(); ctx.globalAlpha = 1;
+  // inner ring + orbit dots
+  ctx.beginPath(); ctx.arc(cx, cy, R * 0.62, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(7,5,16,.88)'; ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 2; ctx.stroke();
+  for (let i = 0; i < 5; i++) {
+    const ang = rnd() * Math.PI * 2, rr = R * (1.12 + rnd() * 0.25);
+    ctx.beginPath(); ctx.arc(cx + Math.cos(ang) * rr, cy + Math.sin(ang) * rr, 3 + rnd() * 4, 0, Math.PI * 2);
+    ctx.fillStyle = 'hsl(' + Math.floor(rnd() * 360) + ',90%,70%)'; ctx.fill();
+  }
+  // initials
+  ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.font = '700 ' + Math.floor(S * 0.21) + 'px "Space Grotesk", sans-serif';
+  ctx.fillText((symbol || '?').slice(0, 3), cx, cy + 2);
+  // name under emblem
+  ctx.font = '600 ' + Math.floor(S * 0.085) + 'px "Space Grotesk", sans-serif';
+  ctx.fillStyle = 'rgba(238,240,255,.92)';
+  ctx.fillText(name.slice(0, 22), cx, S - 26);
+}
+
+/* ============ CREATE TOKEN FLOW ============ */
+function launchParams() {
+  const name = $('ctName').value.trim();
+  const symbol = $('ctSymbol').value.trim().toUpperCase();
+  return { name, symbol };
+}
+async function simulateLaunch() {
+  const { name, symbol } = launchParams();
+  if (!name || !symbol) { setCtStatus('Fill token name and symbol first — or hit Generate.', 'warn'); return; }
+  const from = userAddr || '0x2223C33409A353c5FD304629476fde06945C15A5';
+  setCtStatus('Simulating createLaunchWithTokenConfig on Config #76…');
+  try {
+    const factory = new ethers.Contract(FACTORY, FACTORY_ABI, readProvider);
+    await factory.createLaunchWithTokenConfig.staticCall(name, symbol, METADATA_URI, METADATA_URI, CONFIG_ID, TOKEN_DECIMALS, { from });
+    const gas = await factory.createLaunchWithTokenConfig.estimateGas(name, symbol, METADATA_URI, METADATA_URI, CONFIG_ID, TOKEN_DECIMALS, { from }).catch(() => null);
+    setCtStatus('✅ Simulation passed — launch of <b>' + name + ' (' + symbol + ')</b> on Config #76 would succeed' +
+      (gas ? ' · est. gas ' + gas.toLocaleString('en-US') : '') + ' · pool creation fee 0 ETH.' +
+      (userAddr ? ' Hit “Launch token” to send it.' : ' Connect a wallet to launch for real.'), 'ok');
+    fireConfetti(60);
+    showShareCard(symbol, 'simulated launch');
+  } catch (e) { setCtStatus('Simulation reverted: ' + shortErr(e), 'err'); }
+}
+
+async function doLaunch() {
+  const { name, symbol } = launchParams();
+  if (!name || !symbol) { setCtStatus('Fill token name and symbol first — or hit Generate.', 'warn'); return; }
+  if (!userAddr) { connectWallet(); return; }
+  setCtStatus('Simulating before sending…');
+  try {
+    const factoryR = new ethers.Contract(FACTORY, FACTORY_ABI, readProvider);
+    await factoryR.createLaunchWithTokenConfig.staticCall(name, symbol, METADATA_URI, METADATA_URI, CONFIG_ID, TOKEN_DECIMALS, { from: userAddr });
+  } catch (e) { setCtStatus('Simulation reverted, not sending: ' + shortErr(e), 'err'); return; }
+  try {
+    const factory = new ethers.Contract(FACTORY, FACTORY_ABI, signer);
+    setCtStatus('Simulation OK — sending launch… confirm in wallet.');
+    const tx = await factory.createLaunchWithTokenConfig(name, symbol, METADATA_URI, METADATA_URI, CONFIG_ID, TOKEN_DECIMALS);
+    setCtStatus('Launch sent: ' + txLink(tx.hash) + ' — waiting…');
+    const rc = await tx.wait();
+    let token = null, curve = null;
+    for (const log of rc.logs) {
+      try {
+        const p = factory.interface.parseLog(log);
+        if (p && p.name === 'LaunchCreated') { token = p.args.token; curve = p.args.curve; }
+      } catch {}
+    }
+    let msg = '🚀 Launched in block ' + rc.blockNumber + ': ' + txLink(tx.hash);
+    if (token) msg += '<br>Token: <a href="' + EXPLORER + '/address/' + token + '" target="_blank" rel="noopener">' + token + '</a>';
+    if (curve) msg += '<br>Curve: <a href="' + EXPLORER + '/address/' + curve + '" target="_blank" rel="noopener">' + curve + '</a>';
+    setCtStatus(msg, 'ok');
+    fireConfetti(140);
+    showShareCard(symbol, 'just launched');
+    // optional first buy on the new curve
+    const fb = $('ctFirstBuy').value.trim();
+    if (curve && fb && Number(fb) > 0) {
+      await firstBuy(curve, fb, symbol);
+    }
+    loadTokenList(); loadFeeds();
+  } catch (e) { setCtStatus('Launch failed: ' + shortErr(e), 'err'); }
+}
+
+async function firstBuy(curveAddr, humanWeth, symbol) {
+  try {
+    const amountIn = ethers.parseUnits(humanWeth, 18);
+    const curveR = new ethers.Contract(curveAddr, CURVE_ABI, readProvider);
+    const q = await curveR.quoteExactInput(amountIn, false);
+    const out = q.result.amountOut;
+    setCtStatus('First buy quote: ' + humanWeth + ' WETH → ' + ethers.formatUnits(out, TOKEN_DECIMALS) + ' ' + symbol + ' — approving exact amount…');
+    const weth = new ethers.Contract(WETH, ERC20_ABI, signer);
+    const cur = await weth.allowance(userAddr, curveAddr);
+    if (cur < amountIn) { const atx = await weth.approve(curveAddr, amountIn); await atx.wait(); }
+    const curve = new ethers.Contract(curveAddr, CURVE_ABI, signer);
+    const minOut = out * 99n / 100n;
+    const deadline = Math.floor(Date.now() / 1000) + 1200;
+    const tx = await curve.swapExactInput(amountIn, minOut, false, false, userAddr, deadline);
+    setCtStatus('First buy sent: ' + txLink(tx.hash) + ' — waiting…');
+    const rc = await tx.wait();
+    setCtStatus('✅ First buy confirmed in block ' + rc.blockNumber + ': ' + txLink(tx.hash), 'ok');
+    fireConfetti(100);
+    await loadBalances();
+  } catch (e) { setCtStatus('First buy failed: ' + shortErr(e), 'err'); }
+}
+
+/* ============ CONFETTI + SHARE CARD ============ */
+function fireConfetti(n) {
+  const cv = $('confetti'), ctx = cv.getContext('2d');
+  cv.width = innerWidth; cv.height = innerHeight;
+  const parts = [];
+  const colors = ['#7c5cff', '#b04dff', '#00d4a6', '#38bdf8', '#f472b6', '#facc15'];
+  for (let i = 0; i < (n || 120); i++) {
+    parts.push({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * 0.3, w: 6 + Math.random() * 7, h: 8 + Math.random() * 10,
+      vy: 2 + Math.random() * 3.5, vx: -1.5 + Math.random() * 3, rot: Math.random() * Math.PI, vr: -0.1 + Math.random() * 0.2,
+      c: colors[Math.floor(Math.random() * colors.length)] });
+  }
+  const t0 = performance.now();
+  (function frame(t) {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    let alive = false;
+    for (const p of parts) {
+      p.y += p.vy; p.x += p.vx; p.rot += p.vr;
+      if (p.y < cv.height + 30) alive = true;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
+    }
+    if (alive && t - t0 < 4500) requestAnimationFrame(frame); else ctx.clearRect(0, 0, cv.width, cv.height);
+  })(t0);
+}
+
+function showShareCard(symbol, action) {
+  const box = $('shareBox'), cv = $('shareCanvas'), ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const g = ctx.createLinearGradient(0, 0, W, H);
+  g.addColorStop(0, '#160b38'); g.addColorStop(0.55, '#2a1160'); g.addColorStop(1, '#04382e');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(167,139,250,.5)'; ctx.lineWidth = 3; ctx.strokeRect(18, 18, W - 36, H - 36);
+  ctx.fillStyle = '#fff'; ctx.textAlign = 'left';
+  ctx.font = '700 92px "Space Grotesk", sans-serif';
+  ctx.fillText('GiwaLaunch', 70, 150);
+  ctx.font = '500 44px "Space Grotesk", sans-serif'; ctx.fillStyle = '#c9d6e8';
+  ctx.fillText('Token launchpad on GIWA Sepolia · Ammora SDK', 70, 215);
+  ctx.font = '700 64px "Space Grotesk", sans-serif'; ctx.fillStyle = '#00d4a6';
+  ctx.fillText(symbol + ' ' + action + ' 🚀', 70, 330);
+  const price = symbol === 'GLT' ? lastPrices.GLT : symbol === 'tAMM' ? lastPrices.TAMM : null;
+  ctx.font = '500 40px "JetBrains Mono", monospace'; ctx.fillStyle = '#eef0ff';
+  if (price) ctx.fillText('Price: ' + fmtNum(price, 10) + ' ETH', 70, 405);
+  ctx.font = '500 36px "Space Grotesk", sans-serif'; ctx.fillStyle = '#9aa3c7';
+  ctx.fillText('Config #76 · bonding curve → graduated pool', 70, 470);
+  ctx.font = '600 38px "JetBrains Mono", monospace'; ctx.fillStyle = '#38bdf8';
+  ctx.fillText('cuucuan.github.io/giwalaunch', 70, 545);
+  box.style.display = 'block';
+  const text = encodeURIComponent('Just ' + action + ' ' + symbol + ' on GiwaLaunch — a token launchpad built with the Ammora SDK on GIWA Sepolia 🚀\nhttps://cuucuan.github.io/giwalaunch/');
+  $('tweetBtn').href = 'https://twitter.com/intent/tweet?text=' + text;
+}
+function downloadShareCard() {
+  const a = document.createElement('a');
+  a.download = 'giwalaunch-share.png';
+  a.href = $('shareCanvas').toDataURL('image/png');
+  a.click();
+}
+</script>
+<script>
+/* ============ ON-CHAIN DATA: CHARTS, FEEDS, TOKENS ============ */
+async function getLogsChunked(filter, fromBlock, toBlock) {
+  const out = [];
+  const CHUNK = 9000;
+  for (let f = fromBlock; f <= toBlock; f += CHUNK) {
+    const t = Math.min(f + CHUNK - 1, toBlock);
+    try {
+      const logs = await readProvider.getLogs({ ...filter, fromBlock: f, toBlock: t });
+      out.push(...logs);
+    } catch (e) { /* skip chunk on RPC hiccup */ }
+  }
+  return out;
+}
+const ifaceGltPool = new ethers.Interface(POOL_EVENTS_GLT);
+const ifaceTammPool = new ethers.Interface(POOL_EVENTS_TAMM);
+const ifaceFactory = new ethers.Interface(FACTORY_ABI);
+const ifaceCurve = new ethers.Interface(CURVE_ABI);
+
+let chartPair = 'GLT';
+let priceSeries = { GLT: [], TAMM: [] }; // {block, price}
+function setChart(p) {
+  chartPair = p;
+  $('chartGlt').classList.toggle('active', p === 'GLT');
+  $('chartTamm').classList.toggle('active', p === 'TAMM');
+  drawPriceChart();
+}
+function pushLivePrice(block, gp, tp) {
+  if (gp) { priceSeries.GLT.push({ block, price: gp }); if (priceSeries.GLT.length > 400) priceSeries.GLT.shift(); }
+  if (tp) { priceSeries.TAMM.push({ block, price: tp }); if (priceSeries.TAMM.length > 400) priceSeries.TAMM.shift(); }
+  drawPriceChart();
+}
+async function loadPriceHistory() {
+  try {
+    const latest = await readProvider.getBlockNumber();
+    const from = Math.max(0, latest - 27000);
+    const [gltSync, tammSync] = await Promise.all([
+      getLogsChunked({ address: GLT_POOL, topics: [TOPIC.sync] }, from, latest),
+      getLogsChunked({ address: TAMM_POOL, topics: [TOPIC.sync] }, from, latest),
+    ]);
+    const toSeries = (logs, baseDec) => logs.map(l => {
+      const p = ifaceGltPool.parseLog(l);
+      const rb = Number(ethers.formatUnits(p.args.reserveBase, baseDec));
+      const rq = Number(ethers.formatUnits(p.args.reserveQuote, 18));
+      return { block: l.blockNumber, price: rb > 0 ? rq / rb : 0 };
+    }).filter(x => x.price > 0);
+    priceSeries.GLT = toSeries(gltSync, 9);
+    priceSeries.TAMM = toSeries(tammSync, 6);
+    drawPriceChart();
+  } catch (e) { $('chartTip').textContent = 'Price history unavailable: ' + shortErr(e); }
+}
+function drawLineChart(cv, points, color, tipEl, unit) {
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height, padL = 8, padR = 8, padT = 14, padB = 22;
+  ctx.clearRect(0, 0, W, H);
+  if (!points || points.length < 2) { tipEl.textContent = 'Not enough data points yet.'; return; }
+  const xs = points.map(p => p.x), ys = points.map(p => p.y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs);
+  let minY = Math.min(...ys), maxY = Math.max(...ys);
+  if (maxY === minY) { maxY *= 1.01; minY *= 0.99; }
+  const X = v => padL + (v - minX) / (maxX - minX || 1) * (W - padL - padR);
+  const Y = v => H - padB - (v - minY) / (maxY - minY) * (H - padT - padB);
+  // grid
+  ctx.strokeStyle = 'rgba(140,120,255,.14)'; ctx.lineWidth = 1;
+  for (let i = 1; i < 4; i++) { const y = padT + (H - padT - padB) * i / 4; ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke(); }
+  // area + line
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, color.replace('A', '0.35')); grad.addColorStop(1, color.replace('A', '0'));
+  ctx.beginPath();
+  points.forEach((p, i) => i === 0 ? ctx.moveTo(X(p.x), Y(p.y)) : ctx.lineTo(X(p.x), Y(p.y)));
+  ctx.strokeStyle = color.replace('A', '1'); ctx.lineWidth = 2.5; ctx.stroke();
+  ctx.lineTo(X(maxX), H - padB); ctx.lineTo(X(minX), H - padB); ctx.closePath();
+  ctx.fillStyle = grad; ctx.fill();
+  // last point
+  const last = points[points.length - 1];
+  ctx.beginPath(); ctx.arc(X(last.x), Y(last.y), 5, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.beginPath(); ctx.arc(X(last.x), Y(last.y), 3, 0, Math.PI * 2); ctx.fillStyle = color.replace('A', '1'); ctx.fill();
+  tipEl.textContent = 'Last: ' + fmtNum(last.y, 10) + ' ' + unit + ' · ' + points.length + ' samples';
+  cv.onmousemove = (ev) => {
+    const r = cv.getBoundingClientRect();
+    const mx = (ev.clientX - r.left) * (W / r.width);
+    let best = points[0], bd = 1e18;
+    for (const p of points) { const d = Math.abs(X(p.x) - mx); if (d < bd) { bd = d; best = p; } }
+    drawLineChart(cv, points, color, tipEl, unit);
+    const c2 = cv.getContext('2d');
+    c2.beginPath(); c2.arc(X(best.x), Y(best.y), 6, 0, Math.PI * 2); c2.fillStyle = '#fff'; c2.fill();
+    tipEl.textContent = 'Block ' + best.x.toLocaleString('en-US') + ' · ' + fmtNum(best.y, 10) + ' ' + unit;
+  };
+}
+function drawPriceChart() {
+  const pts = (priceSeries[chartPair] || []).map(p => ({ x: p.block, y: p.price }));
+  // downsample to <=120 points for smoothness
+  const step = Math.max(1, Math.floor(pts.length / 120));
+  const ds = pts.filter((_, i) => i % step === 0 || i === pts.length - 1);
+  drawLineChart($('priceChart'), ds, chartPair === 'GLT' ? 'rgba(167,139,250,A)' : 'rgba(0,212,166,A)', $('chartTip'), chartPair === 'GLT' ? 'WETH/GLT' : 'ETH/tAMM');
+}
+
+async function loadCurveVisualizer() {
+  try {
+    const latest = await readProvider.getBlockNumber();
+    const logs = await getLogsChunked({ address: GLT_CURVE, topics: [TOPIC.curveSwap] }, CONFIG_BLOCK, latest);
+    const migLogs = await getLogsChunked({ address: GLT_CURVE, topics: [TOPIC.migrationReady] }, CONFIG_BLOCK, latest);
+    let sold = 0; const pts = [{ x: 0, y: 0 }];
+    for (const l of logs) {
+      const p = ifaceCurve.parseLog(l);
+      const aIn = Number(ethers.formatUnits(p.args.amountIn, p.args.baseForQuote ? 9 : 18));
+      const aOut = Number(ethers.formatUnits(p.args.amountOut, p.args.baseForQuote ? 18 : 9));
+      const price = p.args.baseForQuote ? (aIn > 0 ? aOut / aIn : 0) : (aOut > 0 ? aIn / aOut : 0);
+      sold += p.args.baseForQuote ? -aIn : aOut;
+      if (price > 0) pts.push({ x: Math.max(0, sold), y: price });
+    }
+    // graduation marker from MigrationReady reserves
+    let gradNote = '';
+    if (migLogs.length) {
+      const m = ifaceCurve.parseLog(migLogs[migLogs.length - 1]);
+      const qRes = Number(ethers.formatUnits(m.args.quoteReserve, 18));
+      const thr = 0.0005;
+      const pct = Math.min(100, qRes / thr * 100);
+      $('gradProgress').style.width = pct + '%';
+      gradNote = 'Graduation: quote reserve hit ' + fmtNum(qRes, 6) + ' WETH vs 0.0005 threshold — migrated ✓';
+      const bRes = Number(ethers.formatUnits(m.args.baseReserve, 9));
+      const totalSupplyApprox = sold + bRes;
+      const gradPrice = bRes > 0 ? qRes / bRes : 0;
+      if (gradPrice > 0) pts.push({ x: totalSupplyApprox, y: gradPrice });
+    }
+    $('gradLabel').textContent = gradNote || 'Graduation progress: —';
+    pts.sort((a, b) => a.x - b.x);
+    drawLineChart($('curveChart'), pts, 'rgba(244,114,182,A)', $('curveTip'), 'WETH/GLT');
+    if (pts.length < 2) $('curveTip').textContent = 'Curve history: ' + logs.length + ' curve swap(s) found.';
+    // lifecycle status from chain
+    const curve = new ethers.Contract(GLT_CURVE, CURVE_ABI, readProvider);
+    const [status, pool] = await Promise.all([curve.status().catch(() => null), curve.canonicalPool().catch(() => null)]);
+    if (pool && pool !== ZERO) $('gradLabel').textContent += ' · canonical pool live: ' + shortAddr(pool);
+  } catch (e) { $('curveTip').textContent = 'Curve data unavailable: ' + shortErr(e); }
+}
+
+let feedItems = [];
+async function loadFeeds() {
+  try {
+    const latest = await readProvider.getBlockNumber();
+    const from = Math.max(0, latest - 27000);
+    const [gltSwaps, tammSwaps, curveSwaps, launches] = await Promise.all([
+      getLogsChunked({ address: GLT_POOL, topics: [TOPIC.poolSwapGlt] }, from, latest),
+      getLogsChunked({ address: TAMM_POOL, topics: [TOPIC.poolSwapTamm] }, from, latest),
+      getLogsChunked({ address: GLT_CURVE, topics: [TOPIC.curveSwap] }, CONFIG_BLOCK, latest),
+      getLogsChunked({ address: FACTORY, topics: [TOPIC.launchCreated] }, CONFIG_BLOCK, latest),
+    ]);
+    const items = [];
+    for (const l of gltSwaps) {
+      const p = ifaceGltPool.parseLog(l);
+      const buy = p.args.tokenIn.toLowerCase() === WETH.toLowerCase();
+      items.push({ block: l.blockNumber, tx: l.transactionHash, pair: 'GLT', buy,
+        text: buy ? fmtNum(ethers.formatUnits(p.args.amountIn, 18), 6) + ' WETH → ' + fmtNum(ethers.formatUnits(p.args.amountOut, 9), 2) + ' GLT'
+                  : fmtNum(ethers.formatUnits(p.args.amountIn, 9), 2) + ' GLT → ' + fmtNum(ethers.formatUnits(p.args.amountOut, 18), 8) + ' WETH' });
+    }
+    for (const l of tammSwaps) {
+      const p = ifaceTammPool.parseLog(l);
+      const buy = p.args.tokenIn.toLowerCase() === WETH.toLowerCase();
+      items.push({ block: l.blockNumber, tx: l.transactionHash, pair: 'tAMM', buy,
+        text: buy ? fmtNum(ethers.formatUnits(p.args.amountIn, 18), 6) + ' ETH → ' + fmtNum(ethers.formatUnits(p.args.amountOut, 6), 2) + ' tAMM'
+                  : fmtNum(ethers.formatUnits(p.args.amountIn, 6), 2) + ' tAMM → ' + fmtNum(ethers.formatUnits(p.args.amountOut, 18), 6) + ' ETH' });
+    }
+    for (const l of curveSwaps) {
+      const p = ifaceCurve.parseLog(l);
+      const buy = !p.args.baseForQuote;
+      items.push({ block: l.blockNumber, tx: l.transactionHash, pair: 'GLT curve', buy,
+        text: buy ? fmtNum(ethers.formatUnits(p.args.amountIn, 18), 6) + ' WETH → ' + fmtNum(ethers.formatUnits(p.args.amountOut, 9), 2) + ' GLT (curve)'
+                  : fmtNum(ethers.formatUnits(p.args.amountIn, 9), 2) + ' GLT → ' + fmtNum(ethers.formatUnits(p.args.amountOut, 18), 8) + ' WETH (curve)' });
+    }
+    for (const l of launches) {
+      const p = ifaceFactory.parseLog(l);
+      if (p.args.configId !== CONFIG_ID) continue;
+      items.push({ block: l.blockNumber, tx: l.transactionHash, pair: 'NEW', buy: true, isLaunch: true,
+        text: '🚀 New token launched: ' + shortAddr(p.args.token) + ' on Config #76' });
+    }
+    items.sort((a, b) => b.block - a.block);
+    feedItems = items;
+    // recent swaps feed
+    $('swapFeed').innerHTML = items.slice(0, 25).map(i =>
+      '<div class="row"><span><span class="tag ' + (i.isLaunch ? 'new' : i.buy ? 'buy' : 'sell') + '">' + (i.isLaunch ? 'LAUNCH' : i.buy ? 'BUY' : 'SELL') + '</span> <b>' + i.pair + '</b> ' + i.text + '</span>' +
+      '<span class="v"><a href="' + EXPLORER + '/tx/' + i.tx + '" target="_blank" rel="noopener">tx</a></span></div>').join('') || '<div class="row"><span class="k">No swaps found in range.</span></div>';
+    // ticker
+    const tick = items.slice(0, 20).map(i =>
+      '<span class="tickitem"><b>' + i.pair + '</b> <span class="' + (i.isLaunch ? 'new' : i.buy ? 'up' : 'dn') + '">' + (i.isLaunch ? '🚀 LAUNCH' : i.buy ? '▲ BUY' : '▼ SELL') + '</span> ' + i.text + '</span>').join('');
+    if (tick) $('ticker').innerHTML = tick;
+  } catch (e) {
+    $('swapFeed').innerHTML = '<div class="row"><span class="k">Feed unavailable: ' + shortErr(e) + '</span></div>';
+  }
+}
+
+let tokenEntries = [];
+async function loadTokenList() {
+  try {
+    const latest = await readProvider.getBlockNumber();
+    const logs = await getLogsChunked({ address: FACTORY, topics: [TOPIC.launchCreated] }, CONFIG_BLOCK, latest);
+    const mine = logs.map(l => ({ log: l, p: ifaceFactory.parseLog(l) })).filter(x => x.p.args.configId === CONFIG_ID);
+    $('launchCount').textContent = mine.length;
+    const entries = [];
+    for (const { log, p } of mine) {
+      const token = p.args.token, curveAddr = p.args.curve;
+      const erc = new ethers.Contract(token, ERC20_ABI, readProvider);
+      const curve = new ethers.Contract(curveAddr, CURVE_ABI, readProvider);
+      const [name, symbol, decimals, status, pool] = await Promise.all([
+        erc.name().catch(() => 'Unknown'), erc.symbol().catch(() => '???'), erc.decimals().catch(() => 9),
+        curve.status().catch(() => null), curve.canonicalPool().catch(() => ZERO),
+      ]);
+      // activity: curve swaps + pool swaps count
+      let activity = 0;
+      try {
+        const cs = await getLogsChunked({ address: curveAddr, topics: [TOPIC.curveSwap] }, log.blockNumber, latest);
+        activity += cs.length;
+        if (pool && pool !== ZERO) {
+          const ps = await getLogsChunked({ address: pool, topics: [TOPIC.poolSwapGlt] }, log.blockNumber, latest);
+          activity += ps.length;
+        }
+      } catch {}
+      entries.push({ token, curve: curveAddr, name, symbol, decimals: Number(decimals), status: status === null ? null : Number(status), pool, activity, block: log.blockNumber });
+    }
+    entries.sort((a, b) => b.activity - a.activity || b.block - a.block);
+    tokenEntries = entries;
+    $('tokenList').innerHTML = entries.map((e, i) => {
+      const graduated = e.pool && e.pool !== ZERO;
+      const statusTxt = graduated ? 'Graduated pool' : (e.status === 1 ? 'Bonding curve' : 'Curve');
+      return '<div class="row tokrow" onclick="selectToken(\'' + e.token + '\')">' +
+        '<span><span class="rank' + (i === 0 ? ' r1' : i === 1 ? ' r2' : i === 2 ? ' r3' : '') + '">' + (i + 1) + '</span>' +
+        '<b>' + e.symbol + '</b> <span class="k">' + e.name + '</span><br><span class="k" style="font-size:12px">' + statusTxt + ' · ' + e.activity + ' swap(s) · ' + shortAddr(e.token) + '</span></span>' +
+        '<span class="v"><a href="' + EXPLORER + '/address/' + e.token + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">view</a></span></div>';
+    }).join('') || '<div class="row"><span class="k">No Config #76 launches found yet.</span></div>';
+  } catch (e) {
+    $('tokenList').innerHTML = '<div class="row"><span class="k">Token list unavailable: ' + shortErr(e) + '</span></div>';
+  }
+}
+
+async function selectToken(tokenAddr) {
+  const e = tokenEntries.find(x => x.token.toLowerCase() === tokenAddr.toLowerCase());
+  if (!e) return;
+  if (e.token.toLowerCase() === GLT.toLowerCase()) { setPair('GLT'); }
+  else if (e.pool && e.pool !== ZERO) {
+    customToken = { token: e.token, symbol: e.symbol, decimals: e.decimals, pool: e.pool, curve: e.curve, status: e.status, balance: 0n };
+    const b = $('pairCustom');
+    b.style.display = ''; b.textContent = e.symbol + ' / WETH';
+    setPair('CUSTOM');
+    if (userAddr) loadBalances();
+  } else {
+    setStatus(e.symbol + ' is still on its bonding curve — pool trading opens after graduation. Curve: ' + shortAddr(e.curve), 'warn');
+    return;
+  }
+  $('swapCard').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ============ INIT ============ */
 syncLabels();
+drawLogo('GiwaLaunch Token', 'GLT');
 refresh();
+loadPriceHistory();
+loadCurveVisualizer();
+loadFeeds();
+loadTokenList();
+setInterval(refresh, 15000);
+setInterval(loadFeeds, 60000);
 </script>
 </body>
 </html>
