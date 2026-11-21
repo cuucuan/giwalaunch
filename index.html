@@ -161,6 +161,36 @@
   .sharebtns button,.sharebtns a.btn{width:auto}
   a.btn{display:inline-block;background:rgba(124,92,255,.1);color:var(--txt);border:1px solid var(--line2);border-radius:10px;padding:9px 15px;font-size:14px}
   a.btn:hover{text-decoration:none;background:rgba(124,92,255,.22)}
+  /* ===== LUAR BIASA upgrade: arena / theater / meme / alerts ===== */
+  .arenabadge{display:inline-block;padding:4px 11px;border-radius:999px;background:rgba(250,204,21,.12);color:#facc15;border:1px solid rgba(250,204,21,.4);font-size:12px;font-weight:700}
+  .pnl{font-family:'JetBrains Mono',monospace;font-weight:700}
+  .pnl.up{color:var(--teal)} .pnl.dn{color:var(--pink)}
+  .papergrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:12px 0}
+  .papergrid .pf{background:rgba(10,8,28,.7);border:1px solid var(--line);border-radius:12px;padding:12px}
+  .papergrid .pf .s{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
+  .papergrid .pf .a{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;margin-top:4px;word-break:break-all}
+  .hist{max-height:190px;overflow:auto;margin-top:8px}
+  .hist .row{font-size:12.5px}
+  .theaterstage{position:relative;background:radial-gradient(120% 140% at 50% 0%,rgba(124,92,255,.28),rgba(7,5,16,.92) 62%);border:1px solid var(--line2);border-radius:16px;padding:18px;overflow:hidden}
+  .theaterstage .spot{position:absolute;inset:0;background:conic-gradient(from 180deg at 50% -10%,transparent 42%,rgba(255,255,255,.07) 50%,transparent 58%);pointer-events:none}
+  .bigprice{font-family:'JetBrains Mono',monospace;font-size:clamp(26px,4.5vw,40px);font-weight:700;text-align:center;margin:6px 0}
+  .bigprice span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  canvas.theater{width:100%;height:auto;display:block}
+  .tsteps{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .tstep{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(10,8,28,.55);opacity:.45;transition:.35s}
+  .tstep.on{opacity:1;border-color:var(--vio2);box-shadow:0 0 0 1px rgba(167,139,250,.35),0 6px 22px rgba(124,92,255,.25)}
+  .tstep .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--grad);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .tstep .tt{font-weight:700;font-size:14px}
+  .tstep .dd{font-size:12.5px;color:var(--mut);line-height:1.5}
+  .memeprev{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start;margin-top:10px}
+  .memeprev canvas{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--line2)}
+  .tweetdraft{white-space:pre-wrap;background:rgba(10,8,28,.8);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13.5px;line-height:1.6;color:#dbe4ff}
+  .alertrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .alertrow select,.alertrow input{background:rgba(10,8,28,.8);border:1px solid var(--line2);color:var(--txt);border-radius:10px;padding:11px;font-size:14px;font-family:inherit;outline:none}
+  .alertrow input{width:110px;font-family:'JetBrains Mono',monospace}
+  #toastBox{position:fixed;right:16px;bottom:16px;z-index:200;display:flex;flex-direction:column;gap:10px;max-width:min(360px,90vw)}
+  .toast{background:rgba(16,12,40,.96);border:1px solid var(--vio2);border-radius:14px;padding:13px 16px;font-size:14px;line-height:1.55;box-shadow:0 14px 44px rgba(0,0,0,.55);animation:fadeUp .35s ease both}
+  .toast b{color:var(--teal)}
 </style>
 </head>
 <body>
@@ -196,6 +226,7 @@
   <div class="herocta">
     <button class="primary" style="width:auto;padding:13px 26px" onclick="document.getElementById('createCard').scrollIntoView({behavior:'smooth'})">🚀 Create a token</button>
     <button onclick="document.getElementById('swapCard').scrollIntoView({behavior:'smooth'})">⇅ Swap now</button>
+    <button onclick="document.getElementById('paperCard').scrollIntoView({behavior:'smooth'})">🎮 Paper Arena — no wallet</button>
     <a class="btn" href="https://faucet.giwa.io/" target="_blank" rel="noopener">💧 Get testnet ETH</a>
   </div>
 </section>
@@ -208,6 +239,119 @@
 </section>
 
 <main>
+<div class="grid2">
+<div>
+  <div class="card fade" id="paperCard">
+    <h2><span class="ic">🎮</span> Paper Trading Arena <span class="arenabadge">no wallet needed</span></h2>
+    <p class="hint">Feel the market in 30 seconds — no wallet, no testnet ETH. You start with <b>10 virtual ETH</b> and trade GLT + tAMM at the exact same live pool quotes as the real swap panel. Pure simulation: nothing is sent on-chain.</p>
+    <div class="papergrid">
+      <div class="pf"><div class="s">Virtual ETH</div><div class="a" id="paperEth">—</div></div>
+      <div class="pf"><div class="s">GLT</div><div class="a" id="paperGlt">—</div></div>
+      <div class="pf"><div class="s">tAMM</div><div class="a" id="paperTamm">—</div></div>
+      <div class="pf"><div class="s">Portfolio value</div><div class="a" id="paperValue">—</div></div>
+      <div class="pf"><div class="s">PnL vs 10 ETH start</div><div class="a pnl" id="paperPnl">—</div></div>
+    </div>
+    <div class="tabs">
+      <button id="paperPairGlt" class="active" onclick="paperSetPair('GLT')">GLT</button>
+      <button id="paperPairTamm" onclick="paperSetPair('TAMM')">tAMM</button>
+    </div>
+    <div class="tabs">
+      <button id="paperSideBuy" class="active" onclick="paperSetSide('buy')">Buy</button>
+      <button id="paperSideSell" onclick="paperSetSide('sell')">Sell</button>
+    </div>
+    <div class="swapbox">
+      <label id="paperInLabel">You pay (virtual)</label>
+      <div class="amtrow">
+        <input id="paperAmtIn" type="text" inputmode="decimal" placeholder="0.0" oninput="paperOnInput()">
+        <span class="sym" id="paperInSym">ETH</span>
+      </div>
+      <div class="bal">Virtual balance: <span id="paperInBal">—</span><button onclick="paperSetMax()">MAX</button></div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="swapbox">
+      <label>You receive (estimated, live quote)</label>
+      <div class="amtrow">
+        <input id="paperAmtOut" type="text" placeholder="0.0" readonly>
+        <span class="sym" id="paperOutSym">GLT</span>
+      </div>
+    </div>
+    <div class="meta" id="paperQuoteMeta">Enter an amount — quotes come live from the same pools as the real swap.</div>
+    <button id="paperTradeBtn" class="primary" onclick="paperTrade()">Paper buy GLT</button>
+    <div class="status" id="paperStatus"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="ghost" onclick="paperReset()">↺ Reset arena (back to 10 ETH)</button>
+    </div>
+    <div class="hist" id="paperHist"></div>
+  </div>
+</div>
+<div>
+  <div class="card fade" id="theaterCard">
+    <h2><span class="ic">🎬</span> Launch Theater — GLT</h2>
+    <p class="hint">The GLT launch story, replayed cinematically from real on-chain events: config → launch → first buy → graduation → pool trading. Every step links to its actual transaction.</p>
+    <div class="theaterstage">
+      <div class="spot"></div>
+      <div style="text-align:center" class="small">GLT live price (ETH)</div>
+      <div class="bigprice"><span id="theaterPrice">—</span></div>
+      <canvas class="theater" id="theaterCanvas" width="900" height="420"></canvas>
+      <div class="progbar"><div id="theaterProgress" style="width:0%"></div></div>
+      <div class="charttip" id="theaterCaption">Press play — the bonding curve fills, graduation hits, the pool goes live.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+      <button class="primary" style="width:auto;flex:1;min-width:200px" onclick="theaterPlay()">▶ Watch GLT launch story</button>
+      <button class="ghost" onclick="theaterStop()">■ Stop</button>
+    </div>
+    <div class="tsteps" id="theaterSteps"></div>
+  </div>
+</div>
+</div>
+
+<div class="grid2">
+<div>
+  <div class="card fade" id="memeCard">
+    <h2><span class="ic">🎁</span> Meme Kit Generator</h2>
+    <p class="hint">One theme in → a complete launch kit out: token name, symbol, description, canvas logo, a ready-to-post tweet draft and a 1200×630 share card PNG. It also fills the Create Token form below.</p>
+    <div class="field">
+      <label>Theme</label>
+      <input id="memeTheme" type="text" placeholder="e.g. dragon, moon, coffee, rocket…" onkeydown="if(event.key==='Enter')memeGenerate()">
+    </div>
+    <button class="primary" onclick="memeGenerate()">🎁 Generate full kit</button>
+    <div class="meta" id="memeOut">Your kit will appear here.</div>
+    <div class="memeprev">
+      <canvas id="memeCanvas" width="1200" height="630" style="display:none"></canvas>
+    </div>
+    <div class="field" id="memeTweetWrap" style="display:none">
+      <label>Tweet draft</label>
+      <div class="tweetdraft" id="memeTweet"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button onclick="memeDownload()">⬇ Download share card PNG</button>
+        <button onclick="copyText(document.getElementById('memeTweet').textContent,this)">Copy tweet</button>
+        <a class="btn" id="memeTweetBtn" href="#" target="_blank" rel="noopener">𝕏 Post on X</a>
+        <button class="ghost" onclick="document.getElementById('createCard').scrollIntoView({behavior:'smooth'})">→ Launch it below</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <div class="card fade" id="alertCard">
+    <h2><span class="ic">🔔</span> Price Alerts</h2>
+    <p class="hint">Set an alert and keep browsing — the live price polling checks every few seconds and fires a browser notification + toast when GLT or tAMM moves by your percentage.</p>
+    <div class="alertrow">
+      <select id="alertToken">
+        <option value="GLT">GLT</option>
+        <option value="TAMM">tAMM</option>
+      </select>
+      <span style="color:var(--mut)">moves ±</span>
+      <input id="alertPct" type="text" inputmode="decimal" value="5">
+      <span style="color:var(--mut)">%</span>
+      <button onclick="alertSet()">🔔 Set alert</button>
+    </div>
+    <div class="meta" id="alertMeta">Baseline = current live price at the moment you set the alert.</div>
+    <div id="alertList"></div>
+  </div>
+</div>
+</div>
+
+
 <div class="grid2">
 <div>
   <div class="card fade" id="swapCard">
@@ -1243,6 +1387,265 @@ loadFeeds();
 loadTokenList();
 setInterval(refresh, 15000);
 setInterval(loadFeeds, 60000);
+</script>
+<div id="toastBox"></div>
+<script>
+/* ============ LUAR BIASA: PAPER ARENA + THEATER + MEME KIT + ALERTS ============ */
+function showToast(html) {
+  const box = $('toastBox'); if (!box) return;
+  const d = document.createElement('div'); d.className = 'toast'; d.innerHTML = html;
+  box.appendChild(d); setTimeout(() => d.remove(), 7000);
+}
+
+/* ---------- PAPER TRADING ARENA ---------- */
+const PAPER_KEY = 'giwalaunch_paper_v1';
+const PAPER_START = '10';
+let paper = null, paperPair = 'GLT', paperSide = 'buy', paperQuoteOut = null, paperAmtInBn = null, paperTimer = null;
+function paperDefault() { return { eth: PAPER_START, glt: '0', tamm: '0', hist: [] }; }
+function paperLoad() {
+  try { paper = JSON.parse(localStorage.getItem(PAPER_KEY)) || paperDefault(); }
+  catch (e) { paper = paperDefault(); }
+  if (!paper || typeof paper.eth !== 'string') paper = paperDefault();
+}
+function paperSave() { try { localStorage.setItem(PAPER_KEY, JSON.stringify(paper)); } catch (e) {} }
+function paperBn(v, dec) { try { return ethers.parseUnits(String(v || '0'), dec); } catch (e) { return 0n; } }
+function paperTok() {
+  if (paperPair === 'GLT') return paperSide === 'buy'
+    ? { inSym: 'ETH', outSym: 'GLT', tokenIn: WETH, pool: GLT_POOL, inDec: 18, outDec: 9, balKey: 'eth' }
+    : { inSym: 'GLT', outSym: 'ETH', tokenIn: GLT, pool: GLT_POOL, inDec: 9, outDec: 18, balKey: 'glt' };
+  return paperSide === 'buy'
+    ? { inSym: 'ETH', outSym: 'tAMM', tokenIn: WETH, pool: TAMM_POOL, inDec: 18, outDec: 6, balKey: 'eth' }
+    : { inSym: 'tAMM', outSym: 'ETH', tokenIn: TAMM, pool: TAMM_POOL, inDec: 6, outDec: 18, balKey: 'tamm' };
+}
+function paperBalBn(sym) {
+  if (sym === 'ETH') return paperBn(paper.eth, 18);
+  if (sym === 'GLT') return paperBn(paper.glt, 9);
+  return paperBn(paper.tamm, 6);
+}
+function paperSetPair(p) { paperPair = p; $('paperPairGlt').classList.toggle('active', p === 'GLT'); $('paperPairTamm').classList.toggle('active', p === 'TAMM'); paperSync(); }
+function paperSetSide(s) { paperSide = s; $('paperSideBuy').classList.toggle('active', s === 'buy'); $('paperSideSell').classList.toggle('active', s === 'sell'); paperSync(); }
+function paperSync() {
+  const t = paperTok();
+  $('paperInSym').textContent = t.inSym; $('paperOutSym').textContent = t.outSym;
+  $('paperInBal').textContent = ethers.formatUnits(paperBalBn(t.inSym), t.inDec) + ' ' + t.inSym;
+  $('paperTradeBtn').textContent = 'Paper ' + paperSide + ' ' + (paperPair === 'TAMM' ? 'tAMM' : 'GLT');
+  paperOnInput();
+}
+function paperSetMax() { const t = paperTok(); $('paperAmtIn').value = ethers.formatUnits(paperBalBn(t.inSym), t.inDec); paperOnInput(); }
+function paperOnInput() { clearTimeout(paperTimer); paperTimer = setTimeout(paperQuote, 350); }
+async function paperQuote() {
+  const t = paperTok(); const raw = $('paperAmtIn').value.trim();
+  paperQuoteOut = null; paperAmtInBn = null; $('paperAmtOut').value = '';
+  if (!raw || isNaN(Number(raw)) || Number(raw) <= 0) { $('paperQuoteMeta').textContent = 'Enter an amount — quotes come live from the same pools as the real swap.'; return; }
+  let amountIn; try { amountIn = ethers.parseUnits(raw, t.inDec); } catch (e) { $('paperQuoteMeta').textContent = 'Invalid amount.'; return; }
+  paperAmtInBn = amountIn; $('paperQuoteMeta').textContent = 'Fetching live quote…';
+  try {
+    const pool = new ethers.Contract(t.pool, POOL_ABI, readProvider);
+    const out = await pool.quoteExactIn(t.tokenIn, amountIn);
+    paperQuoteOut = out;
+    $('paperAmtOut').value = ethers.formatUnits(out, t.outDec);
+    const rate = Number(ethers.formatUnits(out, t.outDec)) / Number(raw);
+    $('paperQuoteMeta').innerHTML = '1 ' + t.inSym + ' ≈ ' + rate.toPrecision(6) + ' ' + t.outSym +
+      ' · same <span class="k">quoteExactIn</span> as the real swap · pool ' + t.pool.slice(0, 10) + '…';
+    if (paperBalBn(t.inSym) < amountIn) $('paperQuoteMeta').innerHTML += '<br><span style="color:#e3b341">Not enough virtual ' + t.inSym + '.</span>';
+  } catch (e) { $('paperQuoteMeta').innerHTML = '<span style="color:#ff7b72">Quote unavailable: ' + shortErr(e) + '</span>'; }
+}
+function paperTrade() {
+  const t = paperTok(); const st = $('paperStatus');
+  if (!paperAmtInBn || !paperQuoteOut) { st.textContent = 'Get a quote first.'; st.className = 'status warn'; return; }
+  if (paperBalBn(t.inSym) < paperAmtInBn) { st.textContent = 'Insufficient virtual ' + t.inSym + ' balance.'; st.className = 'status err'; return; }
+  const inKey = t.balKey;
+  const outKey = t.outSym === 'ETH' ? 'eth' : (t.outSym === 'GLT' ? 'glt' : 'tamm');
+  paper[inKey] = ethers.formatUnits(paperBalBn(t.inSym) - paperAmtInBn, t.inDec);
+  paper[outKey] = ethers.formatUnits(paperBalBn(t.outSym) + paperQuoteOut, t.outDec);
+  paper.hist.unshift({ t: Date.now(), side: paperSide, pair: paperPair, amtIn: ethers.formatUnits(paperAmtInBn, t.inDec), symIn: t.inSym, amtOut: ethers.formatUnits(paperQuoteOut, t.outDec), symOut: t.outSym });
+  paper.hist = paper.hist.slice(0, 30); paperSave();
+  st.innerHTML = '✅ Paper ' + paperSide + ' filled: ' + ethers.formatUnits(paperAmtInBn, t.inDec) + ' ' + t.inSym + ' → ' + ethers.formatUnits(paperQuoteOut, t.outDec) + ' ' + t.outSym + ' (virtual, nothing on-chain).';
+  st.className = 'status ok'; fireConfetti(50);
+  $('paperAmtIn').value = ''; $('paperAmtOut').value = ''; paperQuoteOut = null; paperAmtInBn = null;
+  paperRender(); paperSync();
+}
+function paperReset() { paper = paperDefault(); paperSave(); $('paperStatus').textContent = 'Arena reset — fresh 10 virtual ETH.'; $('paperStatus').className = 'status ok'; paperRender(); paperSync(); }
+function paperRender() {
+  if (!paper) return;
+  $('paperEth').textContent = fmtNum(Number(paper.eth), 6);
+  $('paperGlt').textContent = fmtNum(Number(paper.glt), 2);
+  $('paperTamm').textContent = fmtNum(Number(paper.tamm), 4);
+  const gp = lastPrices.GLT, tp = lastPrices.TAMM;
+  if (gp && tp) {
+    const val = Number(paper.eth) + Number(paper.glt) * gp + Number(paper.tamm) * tp;
+    const pnl = val - Number(PAPER_START);
+    $('paperValue').textContent = fmtNum(val, 6) + ' ETH';
+    const el = $('paperPnl');
+    el.textContent = (pnl >= 0 ? '+' : '') + fmtNum(pnl, 6) + ' ETH (' + (pnl >= 0 ? '+' : '') + (pnl / Number(PAPER_START) * 100).toFixed(2) + '%)';
+    el.className = 'a pnl ' + (pnl >= 0 ? 'up' : 'dn');
+  } else { $('paperValue').textContent = '—'; $('paperPnl').textContent = 'waiting for prices…'; }
+  $('paperHist').innerHTML = paper.hist.length
+    ? paper.hist.map(h => '<div class="row"><span class="k">' + new Date(h.t).toLocaleTimeString() + ' · ' + h.side.toUpperCase() + ' ' + h.pair + '</span><span class="v">' + fmtNum(Number(h.amtIn), 6) + ' ' + h.symIn + ' → ' + fmtNum(Number(h.amtOut), 4) + ' ' + h.symOut + '</span></div>').join('')
+    : '<div class="row"><span class="k">No paper trades yet — your arena history will appear here.</span></div>';
+}
+
+/* ---------- LAUNCH THEATER ---------- */
+const THEATER_STEPS = [
+  { t: 'Config #76 registered', d: 'Immutable launch policy (fees, recipients, graduation) written to the Ammora Config Registry.', tx: '0xcace7484ce924cbc6ae92954ce018698a4049a1478c614660c40e14b72c043fe', p: 0.12 },
+  { t: 'GLT launched on the bonding curve', d: 'GiwaLaunch Token + its pre-graduation curve created in one transaction.', tx: '0xa8aa240478456e9a49086f54aeb87599602b9774d73c013cf94d031bda53bfea', p: 0.38 },
+  { t: 'First buy: 0.001 WETH → 496,855.345911949 GLT', d: 'One buy crossed the 0.0005 WETH graduation threshold.', tx: '0x9754930b9a5f10b9db79da58779b7e94c27a133238786c99abcda47846272aae', p: 0.66 },
+  { t: 'Graduation migration', d: 'Liquidity migrated from the curve into the concentrated pool. 🎓', tx: '0x79205b65c22f5608604a57050618e40988979a7e931ae6b8c307d13cf70fea94', p: 0.88 },
+  { t: 'Pool trading proven: sell 100,000 GLT', d: 'Post-graduation sell executed on the graduated pool — GLT trades live today.', tx: '0xdbd70907e65e8d96990c6d78acc3cbeba34716f2e623e3595be9e1133cbbbc2c', p: 1.0 },
+];
+let theaterTimer = null, theaterPlaying = false;
+function theaterRenderSteps(active) {
+  $('theaterSteps').innerHTML = THEATER_STEPS.map((s, i) =>
+    '<div class="tstep' + (i <= active ? ' on' : '') + '"><div class="n">' + (i + 1) + '</div><div><div class="tt">' + s.t + '</div><div class="dd">' + s.d + ' · ' + txLink(s.tx) + '</div></div></div>').join('');
+}
+function theaterDraw(progress) {
+  const cv = $('theaterCanvas'); if (!cv) return; const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height, pad = 46;
+  ctx.clearRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(140,120,255,.25)'; ctx.lineWidth = 1;
+  for (let i = 1; i < 5; i++) { const y = pad + (H - 2 * pad) * i / 5; ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke(); }
+  const px = x => pad + x * (W - 2 * pad);
+  const py = x => H - pad - (Math.exp(2.6 * x) - 1) / (Math.exp(2.6) - 1) * (H - 2 * pad);
+  ctx.beginPath(); ctx.moveTo(px(0), py(0));
+  for (let x = 0; x <= 1.0001; x += 0.02) ctx.lineTo(px(x), py(x));
+  ctx.strokeStyle = 'rgba(167,139,250,.45)'; ctx.lineWidth = 3; ctx.stroke();
+  const p = Math.max(0, Math.min(1, progress));
+  if (p > 0) {
+    ctx.beginPath(); ctx.moveTo(px(0), H - pad);
+    for (let x = 0; x <= p; x += 0.01) ctx.lineTo(px(x), py(x));
+    ctx.lineTo(px(p), H - pad); ctx.closePath();
+    const g = ctx.createLinearGradient(0, 0, W, 0); g.addColorStop(0, 'rgba(124,92,255,.55)'); g.addColorStop(1, 'rgba(0,212,166,.55)');
+    ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath(); ctx.arc(px(p), py(p), 9, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+    ctx.beginPath(); ctx.arc(px(p), py(p), 15, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(0,212,166,.8)'; ctx.lineWidth = 3; ctx.stroke();
+  }
+  ctx.fillStyle = 'rgba(238,240,255,.85)'; ctx.font = '600 20px "Space Grotesk",sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('bonding curve → graduation', pad, 30);
+  ctx.textAlign = 'right'; ctx.fillStyle = '#00d4a6'; ctx.fillText(Math.round(p * 100) + '%', W - pad, 30);
+}
+function theaterPlay() {
+  theaterStop(); theaterPlaying = true;
+  const t0 = performance.now(), DUR = 11000; let lastStep = -1;
+  theaterRenderSteps(-1);
+  const tick = (t) => {
+    if (!theaterPlaying) return;
+    const p = Math.min(1, (t - t0) / DUR);
+    theaterDraw(p);
+    $('theaterProgress').style.width = (p * 100) + '%';
+    let active = -1; THEATER_STEPS.forEach((s, i) => { if (p >= s.p - 0.14) active = i; });
+    if (active !== lastStep) {
+      lastStep = active; theaterRenderSteps(active);
+      if (active >= 0) $('theaterCaption').textContent = 'Step ' + (active + 1) + '/' + THEATER_STEPS.length + ' — ' + THEATER_STEPS[active].t;
+      if (active === 3) fireConfetti(90);
+    }
+    if (p < 1) theaterTimer = requestAnimationFrame(tick);
+    else { theaterPlaying = false; $('theaterCaption').textContent = '🎬 Story complete — GLT is live on the graduated pool right now. Trade it above, or paper-trade it in the arena.'; fireConfetti(140); }
+  };
+  theaterTimer = requestAnimationFrame(tick);
+}
+function theaterStop() { theaterPlaying = false; if (theaterTimer) cancelAnimationFrame(theaterTimer); }
+
+/* ---------- MEME KIT GENERATOR ---------- */
+let lastMeme = null;
+function memeGenerate() {
+  const theme = ($('memeTheme').value || '').trim();
+  $('genTheme').value = theme;
+  generateTokenIdea();
+  const name = $('ctName').value, symbol = $('ctSymbol').value, desc = $('ctDesc').value;
+  lastMeme = { name, symbol, desc, theme };
+  const tweet = '🚀 ' + name + ' ($' + symbol + ') — ' + desc + '\n\nLaunching on GiwaLaunch, a token launchpad built with the Ammora SDK on GIWA Sepolia.\nConfig #76 · bonding curve → graduated pool\nhttps://cuucuan.github.io/giwalaunch/';
+  $('memeTweet').textContent = tweet;
+  $('memeTweetBtn').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweet);
+  $('memeTweetWrap').style.display = 'block';
+  $('memeOut').innerHTML = '<b>' + name + '</b> ($' + symbol + ')<br>' + desc + '<br><span class="k">Form below is filled — simulate or launch when ready.</span>';
+  memeDrawCard();
+}
+function memeDrawCard() {
+  const cv = $('memeCanvas'), ctx = cv.getContext('2d'); const W = cv.width, H = cv.height;
+  const g = ctx.createLinearGradient(0, 0, W, H);
+  g.addColorStop(0, '#160b38'); g.addColorStop(0.55, '#2a1160'); g.addColorStop(1, '#04382e');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(167,139,250,.5)'; ctx.lineWidth = 3; ctx.strokeRect(18, 18, W - 36, H - 36);
+  try { ctx.drawImage($('logoCanvas'), 70, 120, 300, 300); } catch (e) {}
+  ctx.textAlign = 'left'; ctx.fillStyle = '#fff';
+  ctx.font = '700 78px "Space Grotesk",sans-serif';
+  ctx.fillText(lastMeme.name.slice(0, 24), 420, 200);
+  ctx.font = '700 60px "Space Grotesk",sans-serif'; ctx.fillStyle = '#00d4a6';
+  ctx.fillText('$' + lastMeme.symbol, 420, 285);
+  ctx.font = '500 34px "Space Grotesk",sans-serif'; ctx.fillStyle = '#c9d6e8';
+  const words = lastMeme.desc.split(' '); let line = '', y = 360;
+  for (const w of words) { if ((line + ' ' + w).length > 44) { ctx.fillText(line, 420, y); y += 46; line = w; } else line = line ? line + ' ' + w : w; }
+  if (line) ctx.fillText(line, 420, y);
+  ctx.font = '600 36px "JetBrains Mono",monospace'; ctx.fillStyle = '#38bdf8';
+  ctx.fillText('cuucuan.github.io/giwalaunch', 70, 555);
+  ctx.font = '500 32px "Space Grotesk",sans-serif'; ctx.fillStyle = '#9aa3c7';
+  ctx.fillText('GiwaLaunch · Ammora SDK · GIWA Sepolia', 70, 95);
+  cv.style.display = 'block';
+}
+function memeDownload() {
+  const a = document.createElement('a');
+  a.download = 'giwalaunch-meme-' + (lastMeme ? lastMeme.symbol : 'kit') + '.png';
+  a.href = $('memeCanvas').toDataURL('image/png'); a.click();
+}
+
+/* ---------- PRICE ALERTS ---------- */
+const ALERT_KEY = 'giwalaunch_alerts_v1';
+let alerts = [];
+function alertsLoad() { try { alerts = JSON.parse(localStorage.getItem(ALERT_KEY)) || []; } catch (e) { alerts = []; } }
+function alertsSave() { try { localStorage.setItem(ALERT_KEY, JSON.stringify(alerts)); } catch (e) {} }
+function alertSet() {
+  const token = $('alertToken').value;
+  const pct = parseFloat($('alertPct').value);
+  const base = token === 'GLT' ? lastPrices.GLT : lastPrices.TAMM;
+  if (!base) { $('alertMeta').textContent = 'Prices still loading — try again in a few seconds.'; return; }
+  if (!isFinite(pct) || pct <= 0) { $('alertMeta').textContent = 'Enter a positive percentage.'; return; }
+  alerts.push({ id: Date.now(), token, pct, base });
+  alertsSave(); alertsRender();
+  $('alertMeta').textContent = 'Alert set: ' + token + ' ±' + pct + '% from ' + fmtNum(base, 10) + ' ETH.';
+  if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission().catch(() => {});
+}
+function alertDel(id) { alerts = alerts.filter(a => a.id !== id); alertsSave(); alertsRender(); }
+function alertsRender() {
+  $('alertList').innerHTML = alerts.length
+    ? alerts.map(a => {
+        const cur = a.token === 'GLT' ? lastPrices.GLT : lastPrices.TAMM;
+        const chg = cur ? ((cur - a.base) / a.base * 100) : null;
+        return '<div class="row"><span class="k">🔔 ' + a.token + ' ±' + a.pct + '% (base ' + fmtNum(a.base, 10) + ')</span><span class="v">' + (chg === null ? '—' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '% now') + ' <button onclick="alertDel(' + a.id + ')">✕</button></span></div>';
+      }).join('')
+    : '<div class="row"><span class="k">No active alerts.</span></div>';
+}
+function alertsCheck() {
+  if (!alerts.length) return;
+  let changed = false;
+  alerts = alerts.filter(a => {
+    const cur = a.token === 'GLT' ? lastPrices.GLT : lastPrices.TAMM;
+    if (!cur || !a.base) return true;
+    const chg = (cur - a.base) / a.base * 100;
+    if (Math.abs(chg) >= a.pct) {
+      changed = true;
+      const msg = '<b>🔔 ' + a.token + ' alert:</b> moved ' + (chg >= 0 ? '+' : '') + chg.toFixed(2) + '% — now ' + fmtNum(cur, 10) + ' ETH.';
+      showToast(msg); fireConfetti(40);
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try { new Notification('GiwaLaunch price alert', { body: a.token + ' moved ' + (chg >= 0 ? '+' : '') + chg.toFixed(2) + '% → ' + fmtNum(cur, 10) + ' ETH' }); } catch (e) {}
+      }
+      return false;
+    }
+    return true;
+  });
+  if (changed) alertsSave();
+  alertsRender();
+}
+
+/* ---------- TICK + INIT ---------- */
+function luarBiasaTick() {
+  paperRender(); alertsCheck();
+  const gp = lastPrices.GLT;
+  if (gp) $('theaterPrice').textContent = fmtNum(gp, 10);
+}
+paperLoad(); alertsLoad();
+paperRender(); paperSync(); alertsRender(); theaterRenderSteps(-1); theaterDraw(0);
+setInterval(luarBiasaTick, 5000);
+setTimeout(luarBiasaTick, 2500);
 </script>
 </body>
 </html>
